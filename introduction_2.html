@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>网站特色</title>
+	<link href="static/css/Site.css" rel="stylesheet" />
+	<link href="static/css/bootstrap2.css" rel="stylesheet" />
+	<link href="static/css/bootstrap2.min.css" rel="stylesheet" />
+	<link rel="icon" type="image/x-icon" href="骑行.ico" />
+	<link rel="shortcut icon" type="image/x-icon" href="骑行.ico" />
+	<link href="static/css/jquery-ui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="static/css/loaders.min.css" type="text/css" />
+	<script src="static/js/map/echarts.js"></script> 
+	<script src="static/js/jquery-3.2.1.min.js"></script>
+	<script src="static/js/bootstrap.min.js"></script>
+	<script src="static/js/jquery-ui-1.8.24.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<ul class="nav nav-tabs" style="margin-top: 20px">
+			<li role="presentation"><a href="introduction_1.html">Why</a></li>
+			<li role="presentation" class="active"><a href="#">What</a></li>
+			<li role="presentation"><a href="introduction_3.html">How</a></li>
+			<li role="presentation"><a href="map.html">👉BikeMap</a></li>
+		</ul>
+		<h2>网站特色</h2>
+		<ol class="round">
+			<li class="one">
+				<p style="font-size: large">路径选择的因素不仅仅是路程短！</p>
+				<div id="main" style="width: 100%; height: 400px">
+				</div>
+
+			</li>
+			<li class="two">
+				<p style="font-size: large">3Dmap查看三维路径</p>
+				<img src="static/imgs/Pic/3dmap.png" style="width: 70%" />
+			</li>
+			<li class="three">
+				<p style="font-size: large">路况分析</p>
+				<div class="form-horizontal">
+					<table style="text-align: center; color: black">
+						<tr>
+							<td>
+								<img src="static/imgs/Pic/1.png" style="width: 60%" /></td>
+								<td>
+									<img src="static/imgs/Pic/2.png" style="width: 90%" /></td>
+									<td>
+										<img src="static/imgs/Pic/3.png" style="width: 90%" /></td>
+									</tr>
+									<tr>
+										<td style="width: 33%">
+											<p style="font-size: large">线路提示</p>
+										</td>
+										<td style="width: 33%">
+											<p style="font-size: large">路况分析</p>
+										</td>
+										<td style="width: 33%">
+											<p style="font-size: large">具体路况</p>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</li>
+						<li class="four">
+							<p style="font-size: large">详尽的武大地名数据库</p>
+							<div class="form-horizontal">
+								<table style="text-align: center; color: black">
+									<tr>
+										<td>
+											<img src="static/imgs/Pic/地名.png" style="width: 100%" /></td>
+											<td>
+												<img src="static/imgs/Pic/mysql.png" style="width: 80%" /></td>
+											</tr>
+											<tr>
+												<td style="width: 30%">
+													<p style="font-size: large">POI分布</p>
+												</td>
+												<td style="width: 70%">
+													<p style="font-size: large">MySQL address表</p>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</li>
+								<li class="five">
+									<p style="font-size: large">PC端、移动端内容适配</p>
+									<div class="form-horizontal">
+										<table style="text-align: center; color: black">
+											<tr>
+												<td>
+													<img src="static/imgs/Pic/PC版.png" style="width: 80%" /></td>
+													<td>
+														<img src="static/imgs/Pic/移动版.png" style="width: 60%" /></td>
+													</tr>
+													<tr>
+														<td style="width: 60%">
+															<p style="font-size: large">PC端</p>
+														</td>
+														<td style="width: 30%">
+															<p style="font-size: large">移动端</p>
+														</td>
+													</tr>
+												</table>
+											</div>
+										</li>
+									</ol>
+									<script>
+        //   $(document).ready(function () {
+        	if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)/*/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)*/) {
+        		$("#ri").css("float", "none");
+        		$("#ri").css("width", "100%");
+        		$("#ri").css("padding-left", "inherit");
+        		$("#le").css("float", "none");
+        		$("#le").css("width", "100%");
+        		$("#main").css("height", $(window).height() / 2.5);
+        	}
+        //   });
+        var myChart = echarts.init(document.getElementById('main'));
+        option = {
+        	title: {
+                //  text: '路径规划分析要素',
+                subtext: '',
+                /*  top: 'top',
+                left: 'left',*/
+                textStyle: {
+                	color: 'skyblue',
+                	fontSize: 20
+                }
+            },
+            tooltip: {},
+            animationDurationUpdate: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            legend: {
+            	x: "center",
+            	show: true,
+                data: ["道路", "影响因素", "相关因素"], // 此处不显示根节点学生
+                textStyle: {
+                	color: 'black'
+                }
+            },
+            series: [
+            {
+            	type: 'graph',
+            	layout: 'force',
+            	symbolSize: function (size) {
+            		return size;
+            	},
+            	focusNodeAdjacency: true,
+            	roam: true,
+            	categories: [{
+            		name: '道路',
+            	}, {
+            		name: '影响因素',
+            	}, {
+            		name: '相关因素',
+                    }/* {
+                    name: '测试'
+                    // itemStyle: { 可配置颜色
+                    //     normal: {
+                    //         color: "blue",
+                    //     }
+                    // }
+                }*/],
+                label: {
+                	normal: {
+                		show: true,
+                		textStyle: {
+                			fontSize: 12
+                		}
+                	}
+                },
+                force: {
+                        repulsion: 500//线长
+                    },
+                    tooltip: {
+                        formatter: function (node) { // 区分连线和节点，节点上额外显示其他数字
+                        	if (!node.value) {
+                        		return node.data.name;
+                        	} else {
+                        		return node.data.name + ":" + node.data.showNum;
+                        	}
+                        }
+                    },
+                    lineStyle: {
+                    	normal: {
+                    		opacity: 0.9,
+                    		width: 1,
+                    		curveness: 0.3
+                    	}
+                    },
+                    data: [{
+                    	name: '道路选择',
+                        draggable: true, // 是否可以拖拽，默认false
+                        category: 0, // 这是种类，运维1测试2应用3实施4开发5
+                        number: 0, // 这是编号 非必须，目的仅为方便编写line
+                        value: 50, //图形大小
+                        showNum: 100 //节点需要显示的额外内容
+                    }, {
+                    	name: '距离',
+                    	number: 1,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 45,
+                    	showNum: 80
+                    }, {
+                    	name: '人流',
+                    	number: 2,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 40,
+                    	showNum: 70
+                    }, {
+                    	name: '绿荫',
+                    	number: 3,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 40,
+                    	showNum: 65
+                    }, {
+                    	name: '减速带',
+                    	number: 4,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 35,
+                    	showNum: 50
+                    }, {
+                    	name: '坡度',
+                    	number: 5,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 40,
+                    	showNum: 70
+                    }, {
+                    	name: '时间',
+                    	number: 6,
+                    	category: 2,
+                    	draggable: true,
+                    	value: 30,
+                    	showNum: 30
+                    }, {
+                    	name: '天气',
+                    	number: 7,
+                    	category: 2,
+                    	draggable: true,
+                    	value: 30,
+                    	showNum: 30
+                    }, {
+                    	name: '季节',
+                    	number: 8,
+                    	category: 2,
+                    	draggable: true,
+                    	value: 30,
+                    	showNum: 30
+                    }, {
+                    	name: '个人喜好',
+                    	number: 9,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 40,
+                    	showNum: 70
+                    }, {
+                    	name: '景点',
+                    	number: 10,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 30,
+                    	showNum: 60
+                    }],
+                    links: [/*{
+                   source: '王小二', // 可以用name 可以用number，但name不能重名
+                    target: '运维1'
+                }, */{
+                	source: 0,
+                	target: 2
+                }, {
+                	source: 0,
+                	target: 3
+                }, {
+                	source: 0,
+                	target: 4
+                }, {
+                	source: 0,
+                	target: 5
+                }, {
+                	source: 0,
+                	target: 1
+                }, {
+                	source: 0,
+                	target: 9
+                }, {
+                	source: 0,
+                	target: 10
+                }, {
+                	source: 2,
+                	target: 6
+                }, {
+                	source: 3,
+                	target: 7
+                }, {
+                	source: 3,
+                	target: 8
+                }]
+            }
+            ]
+        };
+        if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)/*/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)*/) {
+        	option.title.textStyle.fontSize = 10;
+        	option.series[0].force.repulsion = 200;
+        	option.legend.x = 'right';
+        }
+        myChart.setOption(option);
+    </script>
+</div>
+</body>
+</html>

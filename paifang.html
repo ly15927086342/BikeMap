@@ -1,0 +1,308 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BikeMap展示</title>
+    <script type="text/javascript" src="static/js/three.js/three.js"></script>
+    <script type="text/javascript" src="static/js/three.js/OBJLoader.js"></script>
+    <script type="text/javascript" src="static/js/three.js/MTLLoader.js"></script>
+    <script type="text/javascript" src="static/js/three.js/OBJMTLLoader.js"></script>
+    <script type="text/javascript" src="static/js/three.js/stats.js"></script>
+    <script type="text/javascript" src="static/js/three.js/TrackballControls.js"></script>
+    <script type="text/javascript" src="static/js/three.js/Projector.js"></script>
+    <script type="text/javascript" src="static/js/three.js/FirstPersonControls.js"></script>
+    <style>
+        body {
+            /* set margin to 0 and overflow to hidden, to go fullscreen */
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>  
+    <div id="WebGL-output"></div>
+<script type="text/javascript">
+    function init() {
+        var clock = new THREE.Clock();
+        // var stats = initStats();
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        var scene = new THREE.Scene();
+        //     scene.fog = new THREE.Fog(0xaaaaaa, 0.010, 500);
+        // create a camera, which defines where we're looking at.
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        scene.add(camera);
+
+        var camControls = new THREE.FirstPersonControls(camera);
+        camControls.lookSpeed = 0.1;
+        camControls.movementSpeed = 40;
+        camControls.noFly = true;
+        camControls.lookVertical = true;
+        camControls.constrainVertical = true;
+        camControls.verticalMin = 1.0;
+        camControls.verticalMax = 2.0;
+        camControls.lon = -100;
+        camControls.lat = 0;
+
+        // create a render and set the size
+        var webGLRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        webGLRenderer.setClearColor(new THREE.Color(0x87ceeb, 1.0));
+        webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+        webGLRenderer.shadowMapEnabled = true;
+        webGLRenderer.shadowMapSoft = true;
+        webGLRenderer.shadowMapType = THREE.PCFShadowMap;
+
+        var textureGrass = THREE.ImageUtils.loadTexture("static/js/three.js/grasslight-big.jpg");
+        textureGrass.wrapS = THREE.RepeatWrapping;
+        textureGrass.wrapT = THREE.RepeatWrapping;
+        textureGrass.repeat.set(4, 4);
+
+        var planeGeometry = new THREE.PlaneGeometry(10000, 2000, 20, 20);
+        var planeMaterial = new THREE.MeshLambertMaterial({ map: textureGrass });
+        var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.receiveShadow = true;
+
+        // rotate and position the plane
+        plane.rotation.x = -0.5 * Math.PI;
+        plane.position.x = 15;
+        plane.position.y = -50;
+        plane.position.z = 0;
+
+        // add the plane to the scene
+        scene.add(plane);
+        // position and point the camera to the center of the scene
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 250;
+
+        var materials = [];
+        for (var i = 1; i < 5; ++i) {
+            materials.push(new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture('static/imgs/空白.png',
+                    {}, function () {
+                        webGLRenderer.render(scene, camera);
+                    }),
+                overdraw: true
+            }));
+        }
+        materials.push(new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture('static/imgs/why.png',
+                {}, function () {
+                    webGLRenderer.render(scene, camera);
+                }),
+            overdraw: true
+        }));
+        materials.push(new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture('static/imgs/空白.png',
+                {}, function () {
+                    webGLRenderer.render(scene, camera);
+                }),
+            overdraw: true
+        }));
+        // a cube in the scene
+        var cube1 = new THREE.Mesh(new THREE.BoxGeometry(20, 20, 20),
+            new THREE.MeshFaceMaterial(materials));
+        cube1.castShadow = true;
+        cube1.position.set(-100, 30, 50);
+        scene.add(cube1);
+
+        var materials2 = [];
+        for (i = 1; i < 5; ++i) {
+            materials2.push(new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture('static/imgs/空白.png',
+                    {}, function () {
+                        webGLRenderer.render(scene, camera);
+                    }),
+                overdraw: true
+            }));
+        }
+        materials2.push(new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture('static/imgs/特色.png',
+                {}, function () {
+                    webGLRenderer.render(scene, camera);
+                }),
+            overdraw: true
+        }));
+        materials2.push(new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture('static/imgs/空白.png',
+                {}, function () {
+                    webGLRenderer.render(scene, camera);
+                }),
+            overdraw: true
+        }));
+        var cube2 = new THREE.Mesh(new THREE.BoxGeometry(20, 20, 20), new THREE.MeshFaceMaterial(materials2));
+        cube2.position.set(-50, 10, 70);
+        cube2.castShadow = true;
+        scene.add(cube2);
+
+        var materials3 = [];
+        for (i = 1; i < 5; ++i) {
+            materials3.push(new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture('static/imgs/空白.png',
+                    {}, function () {
+                        webGLRenderer.render(scene, camera);
+                    }),
+                overdraw: true
+            }));
+        }
+        materials3.push(new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture('static/imgs/算法.png',
+                {}, function () {
+                    webGLRenderer.render(scene, camera);
+                }),
+            overdraw: true
+        }));
+        materials3.push(new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture('static/imgs/空白.png',
+                {}, function () {
+                    webGLRenderer.render(scene, camera);
+                }),
+            overdraw: true
+        }));
+        var cube3 = new THREE.Mesh(new THREE.BoxGeometry(20, 20, 20), new THREE.MeshFaceMaterial(materials3));
+        cube3.position.set(70, 20, 30);
+        cube3.castShadow = true;
+        scene.add(cube3);
+
+        var materials4 = [];
+        for (i = 1; i < 5; ++i) {
+            materials4.push(new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture('static/imgs/空白.png',
+                    {}, function () {
+                        webGLRenderer.render(scene, camera);
+                    }),
+                overdraw: true
+            }));
+        }
+        materials4.push(new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture('static/imgs/bike.png',
+                {}, function () {
+                    webGLRenderer.render(scene, camera);
+                }),
+            overdraw: true
+        }));
+        materials4.push(new THREE.MeshLambertMaterial({
+            map: THREE.ImageUtils.loadTexture('static/imgs/空白.png',
+                {}, function () {
+                    webGLRenderer.render(scene, camera);
+                }),
+            overdraw: true
+        }));
+        var cube4 = new THREE.Mesh(new THREE.BoxGeometry(20, 20, 20), new THREE.MeshFaceMaterial(materials4));
+        cube4.position.set(60, -40, 100);
+        cube4.castShadow = true;
+        scene.add(cube4);
+
+        document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
+
+        var mesh;
+        var loader = new THREE.OBJMTLLoader();
+        loader.load('static/js/three.js/paifang.obj', 'static/js/three.js/paifang.mtl', function (object) {
+            //  object.scale.set(140, 140, 140);//此处困扰很久了！！！！加载不出来的原因就是这句话!!!!!!!!!!!!!!!!!!!!!
+            mesh = object;
+            mesh.position.x = 0;
+            mesh.position.y = -50;
+            mesh.position.z = 0;
+            mesh.castShadow = true;
+            scene.add(mesh);
+        });
+
+        // add subtle ambient lighting
+        var ambiColor = "#1c1c1c";
+        var ambientLight = new THREE.AmbientLight(ambiColor);
+        scene.add(ambientLight);
+
+        var target = new THREE.Object3D();
+        target.position = new THREE.Vector3(5, 0, 0);
+
+
+        var pointColor = "#ffffff";
+        //    var spotLight = new THREE.SpotLight( pointColor);
+        var spotLight = new THREE.DirectionalLight(pointColor);
+        spotLight.position.set(30, 100, 100);
+        spotLight.castShadow = true;
+        spotLight.shadowCameraNear = 0.1;
+        spotLight.shadowCameraFar = 100;
+        spotLight.shadowCameraFov = 50;
+        //    spotLight.target = plane;
+        spotLight.distance = 0;
+        spotLight.shadowCameraNear = 2;
+        spotLight.shadowCameraFar = 200;
+        spotLight.shadowCameraLeft = -100;
+        spotLight.shadowCameraRight = 100;
+        spotLight.shadowCameraTop = 100;
+        spotLight.shadowCameraBottom = -100;
+        spotLight.shadowMapWidth = 2048;
+        spotLight.shadowMapHeight = 2048;
+
+
+        scene.add(spotLight);
+
+        var textureFlare0 = THREE.ImageUtils.loadTexture("static/js/three.js/lensflare0.png");
+        var textureFlare3 = THREE.ImageUtils.loadTexture("static/js/three.js/lensflare3.png");
+
+        var flareColor = new THREE.Color(0xffaacc);
+        var lensFlare = new THREE.LensFlare(textureFlare0, 350, 0.0, THREE.AdditiveBlending, flareColor);
+
+        lensFlare.add(textureFlare3, 60, 0.6, THREE.AdditiveBlending);
+        lensFlare.add(textureFlare3, 70, 0.7, THREE.AdditiveBlending);
+        lensFlare.add(textureFlare3, 120, 0.9, THREE.AdditiveBlending);
+        lensFlare.add(textureFlare3, 70, 1.0, THREE.AdditiveBlending);
+
+
+
+        lensFlare.position.copy(spotLight.position);
+        scene.add(lensFlare);
+        render();
+        function render() {
+            var delta = clock.getDelta();
+            camControls.update(delta);
+            document.addEventListener('mousedown', onDocumentMouseDown, false);
+            requestAnimationFrame(render);
+            webGLRenderer.render(scene, camera);
+        }
+
+        function onDocumentMouseDown(event) {
+
+            var vector = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1, 0.5);
+            vector = vector.unproject(camera);
+
+            var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+            var intersects = raycaster.intersectObjects([cube1, cube2, cube3, cube4]);
+            
+            if (intersects.length > 0) {
+                if (intersects[0].object === cube1) {
+                    window.open('introduction_1.html');
+                } else if (intersects[0].object === cube2) {
+                    window.open('introduction_2.html');
+                } else if (intersects[0].object === cube3) {
+                    window.open('introduction_3.html');
+                } else if (intersects[0].object === cube4) {
+                    window.open('map.html');
+                }
+              //  window.open('http://www.jb51.net/article/80767.htm');
+                scene.remove(intersects[0].object);
+            }
+          
+        }
+        function initStats() {
+
+            var stats = new Stats();
+            stats.setMode(0); // 0: fps, 1: ms
+
+
+            // Align top-left
+            stats.domElement.style.position = 'absolute';
+            stats.domElement.style.left = '0px';
+            stats.domElement.style.top = '0px';
+
+            document.getElementById("Stats-output").appendChild(stats.domElement);
+
+            return stats;
+        }
+    }
+    window.onload = init;
+</script>
+</body>
+</html>

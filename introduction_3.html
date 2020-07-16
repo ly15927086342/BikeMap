@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>网站特色</title>
+	<link href="static/css/Site.css" rel="stylesheet" />
+	<link href="static/css/bootstrap2.css" rel="stylesheet" />
+	<link href="static/css/bootstrap2.min.css" rel="stylesheet" />
+	<link rel="icon" type="image/x-icon" href="骑行.ico" />
+	<link rel="shortcut icon" type="image/x-icon" href="骑行.ico" />
+	<link href="static/css/jquery-ui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="static/css/loaders.min.css" type="text/css" />
+	<script src="static/js/map/echarts.js"></script> 
+	<script src="static/js/jquery-3.2.1.min.js"></script>
+	<script src="static/js/bootstrap.min.js"></script>
+	<script src="static/js/jquery-ui-1.8.24.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<ul class="nav nav-tabs" style="margin-top: 20px">
+			<li role="presentation"><a href="introduction_1.html">Why</a></li>
+			<li role="presentation"><a href="introduction_2.html">What</a></li>
+			<li role="presentation" class="active"><a href="#">How</a></li>
+			<li role="presentation"><a href="map.html">👉BikeMap</a></li>
+		</ul>
+		<h2>建站技术</h2>
+		<ol class="round">
+			<li class="one">
+				<p style="font-size: large">ASP.NET及bootstrap</p>
+				<p>整体框架用ASP.NET，页面布局用bootstrap，部署在腾讯云服务器IIS7</p>
+			</li>
+			<li class="two">
+				<p style="font-size: large">天地图 Javascript API</p>
+				<p>大部分地图功能都用此接口，如调用底图，缩放，自定义控件等</p>
+			</li>
+			<li class="three">
+				<p style="font-size: large">MySQL Database</p>
+				<p>部署在阿里云服务器，含bicycledb和user两个数据库，包括point（节点）、polyline（弧段）、address（地名）、record（路线记录）、userinfo（用户信息）、word（留言板）这6个表。</p>
+			</li>
+		</ol>
+		<h2>算法、方法</h2>
+		<ol class="round">
+			<li class="one">
+				<p style="font-size: large">Floyd</p>
+				<p>最初使用，随着路网扩大，速度慢的问题暴露出来。</p>
+			</li>
+			<li class="two">
+				<p style="font-size: large">Dijkstra</p>
+				<p>速度快，满足实时查询路径的要求</p>
+			</li>
+			<li class="three">
+				<p style="font-size: large">起始节点规划</p>
+				<div class="form-horizontal">
+					<table style="text-align: center; color: black">
+						<tr>
+							<td>
+								<img src="static/imgs/Pic/q1.png" style="width: 90%" /></td>
+								<td>
+									<img src="static/imgs/Pic/q2.png" style="width: 90%" /></td>
+									<td>
+										<img src="static/imgs/Pic/q3.png" style="width: 90%" /></td>
+									</tr>
+									<tr>
+										<td style="width: 33%">
+											<p style="font-size: large">节点规划到垂足</p>
+										</td>
+										<td style="width: 33%">
+											<p style="font-size: large">节点规划到节点（加弧段）</p>
+										</td>
+										<td style="width: 33%">
+											<p style="font-size: large">节点规划到节点（不加弧段）</p>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</li>
+					</ol>
+				</div>
+			</body>
+			</html>

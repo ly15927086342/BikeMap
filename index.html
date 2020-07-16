@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>BikeMap-主页</title>
+	<link href="static/css/Site.css" rel="stylesheet" />
+	<link href="static/css/bootstrap2.min.css" rel="stylesheet" />
+	<link rel="icon" type="image/x-icon" href="骑行.ico" />
+	<link rel="shortcut icon" type="image/x-icon" href="骑行.ico" />
+	<link href="static/css/jquery-ui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="static/css/loaders.min.css" type="text/css" />
+	<script src="static/js/map/echarts.js"></script> 
+	<script src="static/js/jquery-3.2.1.min.js"></script>
+	<script src="static/js/bootstrap.min.js"></script>
+	<script src="static/js/jquery-ui-1.8.24.min.js"></script>
+</head>
+<body>
+	<div class="navbar navbar-default navbar-fixed-top" style="z-index: 10000">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse">
+					<span class="sr-only">导航</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">BikeMap<img src="static/imgs/骑行.png" style="width: 20px; height: 20px; float: left; vertical-align: middle" /></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="./index.html">主页</a></li>
+					<li><a href="./map.html">地图</a></li>
+					<li><a href="./about.html">日志</a></li>
+					<li><a href="./contact.html">关于</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container" style="padding-top: 50px; margin-top: 40px;">
+		<div class="btn-group-vertical" style="width: 40px; height: 80px; position: fixed; bottom: 20px; right: 20px;">
+		</div>
+		<div class="form-horizontal">
+			<div id="le" style="float: left; width: 70%;">
+				<div id="main" style="width: 100%; height: 400px">
+				</div>
+				<h3><strong class="text-success">项目概况</strong></h3>
+                <p><strong>该项目已开源，地址是<a href="https://github.com/ly15927086342/BikeMap">BikeMap</a>，欢迎star！</strong></p>
+				<p>自行车路径规划项目起源于一个知乎帖子（<a href="https://zhuanlan.zhihu.com/p/25200950" target="_blank">https://zhuanlan.zhihu.com/p/25200950</a>），讲的是利用深度学习对海量的街景图像进行分类，估计出道路的安全性。根据起始点之间的节点的安全系数选择最安全的路径，最后根据道路的安全性选择最佳出行路径。</p>
+				<p>然而在此之前，传统的路径规划都是选择“距离”这一单一要素，但是这篇帖子给了我启发：道路的选择主观的，这就意味着，最佳的路线并不是唯一确定的。那么道路的评价除了距离，还有没有别的标准呢？</p>
+				<p>此时，我脑海中浮现出几个关键词：<strong class="text-info">坡度、景色、绿荫、减速带、人流</strong></p>
+				<p>接下来一切都很明确了。我要做的就是把这几个因子归入路选的函数中，然后求出每条道路的最终得分。虽然我们建立了一个函数，但是对于一个主观的问题，无论这个函数里的因子有多少个，都不可能是完整的。这个问题也不是求函数最值问题，而是建立一个适应不同需求的估分函数，从而选择人们心中的最优路径。</p>
+				<p>所以，我所谓的最优，并是真正意义上的最优，而是在固定函数下得到最高分的那条路径。</p>
+				<p>希望作为本科阶段最老的人，在共享单车盛行的年代，给武大的居民或过客指出一条心仪的道路！</p>
+			</div>
+			<div id="ri" style="float: right; width: 30%; padding-left: 20px">
+				<h4>相关链接</h4>
+				<ol class="round">
+					<li class="one">
+						<h5 class="text-warning">项目ppt简介</h5>
+						解释为什么做这个项目（why）？这个项目是什么（what）？怎么做这个项目（how）？
+						<a href="introduction_1.html" target="_blank">进入</a>
+					</li>
+					<li class="two">
+						<h5 class="text-warning">自制武大牌坊像素模型</h5>
+						我用MagicaVoxel软件堆的模型，用Three.js技术展示在网页上。请在PC端查看，加载需要一点时间。
+						<a href="paifang.html" target="_blank">进入</a>
+						<p><strong class="text-success">Tip:</strong></p>
+						<p><strong class="text-danger">&nbsp;&nbsp;&nbsp;·&nbsp; &nbsp;&nbsp;</strong>鼠标滚动可以调节远近</p>
+						<p><strong class="text-warning">&nbsp;&nbsp;&nbsp;·&nbsp; &nbsp;&nbsp;</strong>鼠标左键可以旋转模型</p>
+						<p><strong class="text-info">&nbsp;&nbsp;&nbsp;·&nbsp; &nbsp;&nbsp;</strong>鼠标右键可以拖动模型</p>
+					</li>
+					<li class="three">
+						<h5 class="text-warning">武汉大学详细地图（CaroVision实验室）</h5>
+						由武汉大学慧图工作室CARTOVISON绘制的电子地图，非常详尽，值得推荐。
+						<a href="http://map.whu.edu.cn/" target="_blank">进入</a>
+					</li>
+				</ol>
+			</div>
+		</div>
+		<script>
+			if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)/*/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)*/) {
+				$("#ri").css("float", "none");
+				$("#ri").css("width", "100%");
+				$("#ri").css("padding-left", "inherit");
+				$("#le").css("float", "none");
+				$("#le").css("width", "100%");
+				$("#main").css("height", $(window).height() / 2.5);
+			}
+			var myChart = echarts.init(document.getElementById('main'));
+			option = {
+				title: {
+					text: '路径规划分析要素',
+					subtext: '',
+                /*  top: 'top',
+                left: 'left',*/
+                textStyle: {
+                	color: 'skyblue',
+                	fontSize: 20
+                }
+            },
+            tooltip: {},
+            animationDurationUpdate: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            legend: {
+            	x: "center",
+            	show: true,
+                data: ["道路", "影响因素", "相关因素"], // 此处不显示根节点学生
+                textStyle: {
+                	color: 'black'
+                }
+            },
+            series: [
+            {
+            	type: 'graph',
+            	layout: 'force',
+            	symbolSize: function (size) {
+            		return size;
+            	},
+            	focusNodeAdjacency: true,
+            	roam: true,
+            	categories: [{
+            		name: '道路',
+            	}, {
+            		name: '影响因素',
+            	}, {
+            		name: '相关因素',
+            	}],
+            	label: {
+            		normal: {
+            			show: true,
+            			textStyle: {
+            				fontSize: 12
+            			}
+            		}
+            	},
+            	force: {
+                        repulsion: 500//线长
+                    },
+                    tooltip: {
+                        formatter: function (node) { // 区分连线和节点，节点上额外显示其他数字
+                        	if (!node.value) {
+                        		return node.data.name;
+                        	} else {
+                        		return node.data.name + ":" + node.data.showNum;
+                        	}
+                        }
+                    },
+                    lineStyle: {
+                    	normal: {
+                    		opacity: 0.9,
+                    		width: 1,
+                    		curveness: 0.3
+                    	}
+                    },
+                    data: [{
+                    	name: '道路选择',
+                        draggable: true, // 是否可以拖拽，默认false
+                        category: 0, // 这是种类，运维1测试2应用3实施4开发5
+                        number: 0, // 这是编号 非必须，目的仅为方便编写line
+                        value: 50, //图形大小
+                        showNum: 100 //节点需要显示的额外内容
+                    }, {
+                    	name: '距离',
+                    	number: 1,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 45,
+                    	showNum: 80
+                    }, {
+                    	name: '人流',
+                    	number: 2,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 40,
+                    	showNum: 70
+                    }, {
+                    	name: '绿荫',
+                    	number: 3,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 40,
+                    	showNum: 65
+                    }, {
+                    	name: '减速带',
+                    	number: 4,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 35,
+                    	showNum: 50
+                    }, {
+                    	name: '坡度',
+                    	number: 5,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 40,
+                    	showNum: 70
+                    }, {
+                    	name: '时间',
+                    	number: 6,
+                    	category: 2,
+                    	draggable: true,
+                    	value: 30,
+                    	showNum: 30
+                    }, {
+                    	name: '天气',
+                    	number: 7,
+                    	category: 2,
+                    	draggable: true,
+                    	value: 30,
+                    	showNum: 30
+                    }, {
+                    	name: '季节',
+                    	number: 8,
+                    	category: 2,
+                    	draggable: true,
+                    	value: 30,
+                    	showNum: 30
+                    }, {
+                    	name: '个人喜好',
+                    	number: 9,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 40,
+                    	showNum: 70
+                    }, {
+                    	name: '景点',
+                    	number: 10,
+                    	category: 1,
+                    	draggable: true,
+                    	value: 30,
+                    	showNum: 60
+                    }],
+                    links: [{
+                    	source: 0,
+                    	target: 2
+                    }, {
+                    	source: 0,
+                    	target: 3
+                    }, {
+                    	source: 0,
+                    	target: 4
+                    }, {
+                    	source: 0,
+                    	target: 5
+                    }, {
+                    	source: 0,
+                    	target: 1
+                    }, {
+                    	source: 0,
+                    	target: 9
+                    }, {
+                    	source: 0,
+                    	target: 10
+                    }, {
+                    	source: 2,
+                    	target: 6
+                    }, {
+                    	source: 3,
+                    	target: 7
+                    }, {
+                    	source: 3,
+                    	target: 8
+                    }]
+                }
+                ]
+            };
+            if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
+            	option.title.textStyle.fontSize = 10;
+            	option.series[0].force.repulsion = 200;
+            	option.legend.x = 'right';
+            }
+            myChart.setOption(option);
+        </script>
+        <hr />
+        <footer style="align-items: center; text-align: center;" id="foot">
+        	<div style="margin: 0 auto;margin-bottom:20px;">
+        		<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011102000743" style="display: inline-block; text-decoration: none; height: 20px; line-height: 20px;">
+        			<img src="static/imgs/备案图标.png" style="float: left;" /><p style="float: left; height: 20px; line-height: 20px; margin: 0px 0px 0px 5px; color: #939393;">鄂公网安备 42011102000743号</p>
+        		</a>
+        		<p style="color: #939393;">Copyright &copy; 2020 - Liyu All Rights Reserved</p>
+        		<script type="text/javascript">
+        			var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://"); document.write(unescape("%3Cspan id='cnzz_stat_icon_1263209261'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1263209261%26online%3D2' type='text/javascript'%3E%3C/script%3E"));
+        		</script>
+        	</div>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>BikeMap-地图</title>
+	<link href="static/css/Site.css" rel="stylesheet" />
+	<link href="static/css/bootstrap2.min.css" rel="stylesheet" />
+	<link rel="icon" type="image/x-icon" href="骑行.ico" />
+	<link rel="shortcut icon" type="image/x-icon" href="骑行.ico" />
+	<link href="static/css/jquery-ui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="static/css/loaders.min.css" type="text/css" />
+	<script src="static/js/map/echarts.js"></script>
+	<script src="static/js/map/echarts-gl.js"></script>   
+	<script src="static/js/map/shine.js"></script>
+	<script src="static/js/jquery-3.2.1.min.js"></script>
+	<script src="static/js/bootstrap.min.js"></script>
+	<script src="static/js/jquery-ui-1.8.24.min.js"></script>
+	<script type="text/javascript" src="//api.tianditu.gov.cn/api?v=4.0&tk=ee1ce731737b710ba361031e64df5db4"></script>
+	<!-- 后台会更新 -->
+	<script type="text/javascript" src="static/js/data/polyline.js"></script>
+	<script type="text/javascript" src="static/js/data/point.js"></script>
+	<script type="text/javascript" src="static/js/data/address.js"></script>
+	<script type="text/javascript" src="static/js/data/heatmap.js"></script>
+	<script type="text/javascript" src="static/js/data/lunkuo.js"></script>
+</head>
+<body>
+	<div class="navbar navbar-default navbar-fixed-top" style="z-index: 10000">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse">
+					<span class="sr-only">导航</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">BikeMap<img src="static/imgs/骑行.png" style="width: 20px; height: 20px; float: left; vertical-align: middle" /></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="./index.html">主页</a></li>
+					<li class="active"><a href="./map.html">地图</a></li>
+					<li><a href="./about.html">日志</a></li>
+					<li><a href="./contact.html">关于</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function () {
+			try {
+				huduanrefresh(0.5, 0.5, 0, 0);
+				if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
+					map.removeControl(copyControl);
+					$(".form-group").css("width", "100%");
+					$("input").css("max-width", "350px");
+					$("button").css("max-width", "200px");
+					$("#li1").css("display", "block");
+					$("#location1").css("display", "block");
+					$("#li1").css("display", "block");
+					$("#shuoming").css("display", "block");
+                    //创建缩放控件对象
+                    control = new T.Control.Zoom({ position: T_ANCHOR_BOTTOM_RIGHT });
+                    //添加缩放控件
+                    map.addControl(control);
+                    //  $("#compass").css("display", "none");
+                    $("#compass").css("width", "40px");
+                    $("#compass").css("height", "40px");
+                    $("#compass").css("top", "45px");
+                    $("#compass").css("left", "5px");
+                    $("#3dmapcont").css("width", $(window).width());
+                    $("#3dmapcont").css("height", $(window).height());
+                } else {
+                	$("#search").css("display", "block");
+                	$("#main").css("bottom", "0");
+                	$(".nav-pills").css("display", "block");
+                	$(".form-group").css("width", "300px");
+                	$("#3dmapcont").css("left", $(window).width() / 2 - 350);
+                	$("#3dmapcont").css("top", $(window).height() / 2 - 250);
+                	$("#imgcont").css("display", "block");
+                }
+                $("#left").css("top", $(window).height() / 2 - 60);
+                $("#right").css("top", $(window).height() / 2 - 60);
+                $("#more").css("left", $(window).width() / 2 - 125);
+            } catch (e) { }
+        });
+    </script>
+
+    <div id="cont" class="alert alert-dismissible" style="overflow: hidden; position: absolute; right: 0px; top: 54px; bottom: 0px; left: 0px; margin-bottom: 0; padding-right: 15px; background-color: white; display: none; z-index: 7000;">
+    	<button type='button' class='close' onclick='closecont()' style="position: absolute; right: 10px; top: 10px;">&times;</button>
+    	<ul class="nav nav-tabs">
+    		<li class="dropdown" id="drop" style="display: none">
+    			<a class="dropdown-toggle" data-toggle="dropdown" href="#">地图<span class="caret"></span>
+    			</a>
+    			<ul class="dropdown-menu">
+    				<li id="tishi"><a href="#map" data-toggle="tab">路线提示</a></li>
+    				<li class="divider"></li>
+    				<li><a href="#map1" data-toggle="tab">道路路况分析</a></li>
+    			</ul>
+    		</li>
+    		<li><a href="#profile" data-toggle="tab">系数</a></li>
+    		<li><a href="#func" data-toggle="tab">功能</a></li>
+    		<li><a href="#history" data-toggle="tab" id="hist">历史</a></li>
+    	</ul>
+    	<div id="myTabContent" class="tab-content" style="overflow: auto; height: 90%; padding-top: 10px;">
+    		<div class="tab-pane fade" id="profile" style="padding: 10px">
+    			<fieldset>
+    				<h4 style="margin-top: 0">当前系数</h4>
+    				<div style="padding: 10px; margin-bottom: 15px">
+    					<div class="progress progress-striped active" style="margin-bottom: 0;">
+    						<div id="disbar1" class="progress-bar progress-bar-danger" style="width: 10%"></div>
+    						<div id="slopebar1" class="progress-bar progress-bar-info" style="width: 35%"></div>
+    						<div id="shadebar1" class="progress-bar progress-bar-success" style="width: 35%"></div>
+    						<div id="blockbar1" class="progress-bar progress-bar-warning" style="width: 20%"></div>
+    					</div>
+    					<div align="right">
+    						<span class="label label-danger">距离</span>
+    						<span class="label label-info">坡度</span>
+    						<span class="label label-success">绿荫</span>
+    						<span class="label label-warning">减速带</span>
+    					</div>
+    				</div>
+
+    				<h4>模式选择</h4>
+    				<div style="padding: 10px 0 10px 0">
+    					<ul class="list-group">
+    						<p>经典</p>
+    						<li onclick="huduanrefresh(0,1,0,0)" class="list-group-item" style="background-color: #ff4136; text-align: center; cursor: pointer; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;">路程短</li>
+    						<p style="margin-top: 10px">特色</p>
+    						<li onclick="huduanrefresh(1,0,0,0)" class="list-group-item" style="-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; background-color: #75caeb; text-align: center; cursor: pointer">省力</li>
+    						<li onclick="huduanrefresh(0,0,1,0)" class="list-group-item" style="background-color: #28b62c; text-align: center; cursor: pointer; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;">阴凉</li>
+    						<li onclick="huduanrefresh(0,0,0,1)" class="list-group-item" style="background-color: #ff851b; text-align: center; cursor: pointer; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;">平坦</li>
+    						<p style="margin-top: 10px">自定义</p>
+    					</ul>
+    					<table style="width: 100%;">
+    						<tr>
+    							<td>坡度</td>
+    							<td>
+    								<input type="text" class="form-control" id="Text5" value="0.5">
+    							</td>
+    						</tr>
+    						<tr>
+    							<td>距离</td>
+    							<td>
+    								<input type="text" class="form-control" id="Text6" value="0.5">
+    							</td>
+    						</tr>
+    						<tr>
+    							<td>减速带</td>
+    							<td>
+    								<input type="text" class="form-control" id="Text7" value="0">
+    							</td>
+    						</tr>
+    						<tr>
+    							<td>绿荫覆盖率</td>
+    							<td>
+    								<input type="text" class="form-control" id="Text8" value="0">
+    							</td>
+    						</tr>
+    						<tr>
+    							<td colspan="2" align="right">
+    								<button type="button" class="btn btn-primary" onclick="huduanrefresh2()">确定</button>
+    							</td>
+    						</tr>
+    					</table>
+    				</div>
+    			</fieldset>
+    		</div>
+    		<div class="tab-pane fade active in" id="func">
+    			<p>基本功能</p>
+    			<button type="button" onclick="makebe()" class="btn btn-success">设置起点</button>
+    			<button type="button" onclick="makefi()" class="btn btn-danger">设置终点</button>
+    			<button type="button" onclick="clearmap()" class="btn btn-primary">清空标记</button>
+    			<button id="showc1" type="button" onclick="showcloud(this)" class="btn btn-primary">展POI</button>
+    			<button id="map5" type="button" onclick="changemap(this)" class="btn btn-primary">卫星图</button>
+    			<p style="margin-top: 10px">统计分析</p>
+    			<button type="button" data-toggle="modal" data-target="#modal-dis" class="btn btn-primary">距离</button>
+    			<button type="button" data-toggle="modal" data-target="#modal-slope" class="btn btn-primary">坡度</button>
+    			<button type="button" data-toggle="modal" data-target="#modal-shade" class="btn btn-primary">绿荫</button>
+    			<p style="margin-top: 10px">算法选择</p>
+    			<button id="dijkstra1" type="button" class="btn btn-primary">Dijkstra（默认）</button>
+    			<button id="floyd1" type="button" class="btn btn-primary">Floyd</button>
+    			<div id="login1">
+    				<p style="margin-top: 10px">扩展功能</p>
+    				<button type="button" id="te1" class="btn btn-default">展点</button>
+    				<button type="button" id="showline1" class="btn btn-default">展网</button>
+    				<button class="btn btn-default" id="heatmap1" type="button">显示高程图</button>
+    			</div>
+    		</div>
+    		<div class="tab-pane fade" id="map">
+    			<div id="tip1">
+    				<ul class="list-group" id="infotable1" style="text-align: left; overflow: auto; height: 100%;"></ul>
+    			</div>
+    		</div>
+    		<div class="tab-pane fade" id="map1">
+    			<h4><strong class="text-danger">路况分析</strong></h4>
+    			<p id="tongji1" style="color: #444"></p>
+    			<div id="echart1"></div>
+    		</div>
+    		<div class="tab-pane fade" id="history">
+    			<p>历史轨迹</p>
+    			<div id="Label2"></div>
+    		</div>
+    	</div>
+    </div>
+    <div id="main" style="margin: 0 auto; overflow: hidden; position: absolute; width: 100%; top: 54px; bottom: 0; left: 0;">
+    	<div id="mapDiv" style="width: 100%; height: 100%"></div>
+    	<div id="imgcont" style="display: none; text-align: center; vertical-align: middle; align-content: center; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; position: absolute; right: 10px; top: 10px; height: 40px; width: 200px; background-color: white; z-index: 3000">
+    		<img id="shuomingid1" src="static/imgs/出团说明书.png" style="align-self: center; width: 25px; height: 25px; margin: 7.5px 7.5px 7.5px 0; cursor: pointer" />
+    		<img id="canshu1" src="static/imgs/系统参数设置.png" style="align-self: center; width: 25px; height: 25px; margin: 7.5px 7.5px 7.5px 0; cursor: pointer" />
+    		<img id="xitong" src="static/imgs/系统功能.png" style="align-self: center; width: 25px; height: 25px; margin: 7.5px 7.5px 7.5px 0; cursor: pointer" />
+    		<img id="lishi" src="static/imgs/历史纪录.png" style="align-self: center; width: 25px; height: 25px; margin: 7.5px 0 7.5px 0; cursor: pointer" />
+    	</div>
+    	<div id="shuomingid" style="-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; display: none; position: absolute; top: 60px; right: 10px; padding: 0 10px 10px 10px; overflow: auto; width: 300px; height: 450px; z-index: 3000; background-color: white">
+    		<h4>使用说明</h4>
+    		<ul>
+    			<li><strong class="text-info" style="font-family: 'Bell MT'">BikeMap</strong>是一个本人专门在武汉大学范围内规划自行车行车路径的免费网站，拥有众多功能和分析图表。主要功能有：根据起/终点选择路径；可调节的道路系数；搜索地名确定位置；手机定位；收藏轨迹；路线提示；路况分析；展POI；路线三维模型展示以及关于原始数据的统计分析图表展示。</li>
+    			<li><strong class="text-warning">“系数”</strong>反应道路选择的元素之间的比重，如距离为红色，坡度为蓝色，绿荫为绿色，减速带为黄色，那当前系数的色块长度就反应其比重。自定义可以凭喜好设定元素的比重。</li>
+    			<li><strong class="text-warning">起/终点确定</strong>方法有两种，一种是输入地名找到位置，另一种是右键选择“设置起/终点”，再在地图上单击具体位置即可。两种方法均要求先确定起点，再确定终点。终点一旦确定，道路自动展示。</li>
+    			<li>在地图上<strong class="text-warning">右键</strong>可以获得“设置起/终点”、“手机定位”以及“清空”功能。其中“手机定位”是H5定位，其定位精度较低，不推荐使用。“清空”会清空地图上的所有覆盖物。</li>
+    			<li>
+    				<img src="static/imgs/up.png" />表示上坡，<img src="static/imgs/plain.png" />表示缓坡，<img src="static/imgs/down.png" />表示下坡</li>
+    			</ul>
+    			<p><strong class="text-danger">注：</strong></p>
+    			<ul>
+    				<li class="text-danger">该网站的所有数据都是本人通过合理合法的方式获取，经纬度是在天地图上采集，海拔是srtm90内插获得，绿荫覆盖率和减速带为实地测量或考察获取，地名为CARTOVISON绘制的地图上的地名自己录入数据库。数据的准确性和精度并不能保证，提供的路径仅供参考。若发现数据存在问题，请联系我。</li>
+    				<li class="text-danger">路径规划中，将起/终点规划到道路上，使用的是最短距离的方法，所以可能与实际情况不符，酌情使用。解决方法是手动将地点的出/入口位置设置为起/终点。</li>
+    				<li class="text-danger">本网站目前在移动端的页面与PC端基本一致，PC端右键，在移动端改为长按地图。</li>
+    				<li class="text-danger">如果有任何建议或意见，请在<a href="contact.html">“联系方式”</a>中留言。</li>
+    			</ul>
+    			<p align="right">All Rights Reserved by Liyu.</p>
+    		</div>
+    		<div id="canshu" style="-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; display: none; position: absolute; top: 60px; right: 10px; padding: 10px; overflow: auto; width: 300px; height: 450px; z-index: 3000; background-color: white">
+    			<h4 style="margin-top: 0">当前系数</h4>
+    			<div style="padding: 10px; margin-bottom: 15px">
+    				<div class="progress progress-striped active" style="margin-bottom: 0;">
+    					<div id="disbar" class="progress-bar progress-bar-danger" style="width: 10%"></div>
+    					<div id="slopebar" class="progress-bar progress-bar-info" style="width: 35%"></div>
+    					<div id="shadebar" class="progress-bar progress-bar-success" style="width: 35%"></div>
+    					<div id="blockbar" class="progress-bar progress-bar-warning" style="width: 20%"></div>
+    				</div>
+    				<div align="right">
+    					<span class="label label-danger">距离</span>
+    					<span class="label label-info">坡度</span>
+    					<span class="label label-success">绿荫</span>
+    					<span class="label label-warning">减速带</span>
+    				</div>
+    			</div>
+
+
+    			<h4>模式选择</h4>
+    			<div style="padding: 10px 0 10px 0">
+    				<ul class="list-group">
+    					<p>经典</p>
+    					<li onclick="huduanrefresh(0,1,0,0)" class="list-group-item" style="background-color: #ff4136; text-align: center; cursor: pointer; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;">路程短</li>
+    					<p style="margin-top: 10px">特色</p>
+    					<li onclick="huduanrefresh(1,0,0,0)" class="list-group-item" style="-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; background-color: #75caeb; text-align: center; cursor: pointer">省力</li>
+    					<li onclick="huduanrefresh(0,0,1,0)" class="list-group-item" style="background-color: #28b62c; text-align: center; cursor: pointer; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;">阴凉</li>
+    					<li onclick="huduanrefresh(0,0,0,1)" class="list-group-item" style="background-color: #ff851b; text-align: center; cursor: pointer; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;">平坦</li>
+    					<p style="margin-top: 10px">自定义</p>
+    				</ul>
+    				<table style="width: 100%;">
+    					<tr>
+    						<td>坡度</td>
+    						<td>
+    							<input type="text" class="form-control" id="Text1" value="0.5"></td>
+    						</tr>
+    						<tr>
+    							<td>距离</td>
+    							<td>
+    								<input type="text" class="form-control" id="Text2" value="0.5"></td>
+    							</tr>
+    							<tr>
+    								<td>减速带</td>
+    								<td>
+    									<input type="text" class="form-control" id="Text3" value="0"></td>
+    								</tr>
+    								<tr>
+    									<td>绿荫覆盖率</td>
+    									<td>
+    										<input type="text" class="form-control" id="Text4" value="0"></td>
+    									</tr>
+    									<tr>
+    										<td colspan="2" align="right">
+    											<button type="button" class="btn btn-primary" onclick="huduanrefresh1()">确定</button></td>
+    										</tr>
+    									</table>
+    								</div>
+    							</div>
+    							<div id="xitongid" style="-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; display: none; position: absolute; top: 60px; right: 10px; padding: 0 10px 10px 10px; overflow: auto; width: 300px; height: 450px; z-index: 3000; background-color: white">
+
+    								<h4>基本功能</h4>
+    								<button type="button" onclick="makebe()" class="btn btn-success">设置起点</button>
+    								<button type="button" onclick="makefi()" class="btn btn-danger">设置终点</button>
+    								<button type="button" onclick="clearmap()" class="btn btn-default">清空标记</button>
+    								<button id="showc2" type="button" onclick="showcloud(this)" class="btn btn-primary">展POI</button>
+    								<button id="map2" type="button" onclick="changemap(this)" class="btn btn-primary">卫星图</button>
+    								<h4 style="margin-top: 10px">统计分析</h4>
+    								<button type="button" id="distance" data-toggle="modal" data-target="#modal-dis" class="btn btn-primary">距离</button>
+    								<button type="button" id="slope" data-toggle="modal" data-target="#modal-slope" class="btn btn-primary">坡度</button>
+    								<button type="button" id="shade" data-toggle="modal" data-target="#modal-shade" class="btn btn-primary">绿荫</button>
+
+    								<h4 style="margin-top: 10px">算法选择</h4>
+    								<button id="dijkstra" type="button" class="btn btn-primary">Dijkstra（默认）</button>
+    								<button id="floyd" type="button" class="btn btn-primary">Floyd</button>
+    								<h4 style="margin-top: 10px">扩展功能</h4>
+    								<button type="button" id="te" class="btn btn-default">展点</button>
+    								<button type="button" id="showline" class="btn btn-default">展网</button>
+    								<button class="btn btn-default" id="heatmap" type="button">显示高程图</button>
+    							</div>
+    							<div id="lishijilu" style="-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; display: none; position: absolute; top: 60px; right: 10px; padding: 0 10px 10px 10px; overflow: auto; width: 300px; height: 450px; z-index: 3000; background-color: white">
+    								<h4>历史记录</h4>
+    								<div id="Label1"></div>
+    							</div>
+    							<div id="search" class="form-group" style="position: absolute; top: 0; left: 0; padding: 10px; z-index: 5100; display: none">
+    								<input id="inf" class="form-control" type="text" placeholder="输入地名" style="float: left; width: 80%" />
+    								<button type="button" id="go" onclick="gofun()" class="btn btn-success" style="float: left; width: 20%">搜索</button>
+    							</div>
+
+    							<img id="left" src="static/imgs/left.png" style="cursor: pointer; width: 50px; height: 50px; z-index: 4900; left: 0; display: none; position: absolute" />
+    							<img id="right" src="static/imgs/right.png" style="cursor: pointer; width: 50px; height: 50px; z-index: 4900; right: 0; display: none; position: absolute" />
+
+
+    							<div id="shuoming" data-toggle="modal" data-target="#modal-shuo" style="width: 40px; height: 40px; position: absolute; z-index: 4900; bottom: 180px; right: 10px; display: none; border-radius: 4px;text-align: center;line-height: 40px;background-color: white;"  >
+    								<img src="static/imgs/说明书.png" style="width: 30px;height: 30px;" />
+    							</div>
+    							<div id="li1" style="width: 40px; height: 40px; position: absolute; z-index: 4900; bottom: 130px; right: 10px; display: none; border-radius: 4px;text-align: center;line-height: 40px;background-color: white;"  >
+    								<img src="static/imgs/功能.png" style="width: 30px;height: 30px;" />
+    							</div>
+    							<div id="location1" style="z-index: 3000; bottom: 80px; right: 10px; position: absolute; width: 40px; height: 40px; display: none; border-radius: 4px;text-align: center;line-height: 40px;background-color: white;" >
+    								<img src="static/imgs/location1.png" style="width: 30px;height: 30px;" />	
+    							</div>    							
+
+    							<img id="sea" src="static/imgs/搜索.png" style="width: 30px; height: 30px; position: absolute; z-index: 4900; top: 10px; left: 10px;" />
+    							<img id="compass" src="static/imgs/compass.png" style="width: 40px; height: 40px; position: absolute; z-index: 4900; top: 50px; left: 10px;" />
+    							
+    							<div id="tip" style="width: 200px; right: 10px; bottom: 433px; position: absolute; z-index: 2000; display: none">
+    								<ul class="list-group" id="infotext" style="z-index: inherit; text-align: center; width: 100%; overflow: hidden; position: absolute;"></ul>
+    								<ul class="list-group" id="infotable" style="z-index: inherit; top: 43px; text-align: left; overflow: auto; width: 100%; height: 350px; position: absolute;"></ul>
+    							</div>
+    							<div class="alert alert-dismissible" id="echarts" style="height: 450px; width: 430px; position: absolute; left: 10px; bottom: 10px; z-index: 3000; display: none; background-color: white">
+    								<button type='button' class='close' onclick='closechart()'>&times;</button>
+    								<h4><strong class="text-danger">路况分析</strong></h4>
+    								<p id="tongji" style="color: #444"></p>
+    								<div id="echart" style="width: 400px; height: 300px; bottom: 0; position: absolute;"></div>
+    							</div>
+    							<div class="modal" id="modal-shuo" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="z-index: 20000;">
+    								<div class="modal-dialog">
+    									<div class="modal-content">
+    										<div class="modal-header">
+    											<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+    											<h4 class="modal-title">BikeMap使用说明</h4>
+    										</div>
+    										<div class="modal-body" style="align-items: center;">
+    											<div id="nei" style="overflow: auto">
+    												<ul>
+    													<li><strong class="text-info" style="font-family: 'Bell MT'">BikeMap</strong>是一个本人专门在武汉大学范围内规划自行车行车路径的免费网站，拥有众多功能和分析图表。主要功能有：根据起/终点选择路径；可调节的道路系数；搜索地名确定位置；手机定位；收藏轨迹；路线提示；路况分析；展POI；路线三维模型展示以及关于原始数据的统计分析图表展示。</li>
+    													<li><strong class="text-warning">“系数”</strong>反应道路选择的元素之间的比重，如距离为红色，坡度为蓝色，绿荫为绿色，减速带为黄色，那当前系数的色块长度就反应其比重。自定义可以凭喜好设定元素的比重。</li>
+    													<li><strong class="text-warning">起/终点确定</strong>方法有两种，一种是输入地名找到位置，另一种是右键选择“设置起/终点”，再在地图上单击具体位置即可。两种方法均要求先确定起点，再确定终点。终点一旦确定，道路自动展示。</li>
+    													<li>在地图上<strong class="text-warning">右键</strong>可以获得“设置起/终点”、“手机定位”以及“清空”功能。其中“手机定位”是H5定位，其定位精度较低，不推荐使用。“清空”会清空地图上的所有覆盖物。</li>
+    													<li>
+    														<img src="static/imgs/up.png" />表示上坡，<img src="static/imgs/plain.png" />表示缓坡，<img src="static/imgs/down.png" />表示下坡</li>
+    													</ul>
+    													<p><strong class="text-danger">注：</strong></p>
+    													<ul>
+    														<li class="text-danger">该网站的所有数据都是本人通过合理合法的方式获取，经纬度是在天地图上采集，海拔是srtm90内插获得，绿荫覆盖率和减速带为实地测量或考察获取，地名为CARTOVISON绘制的地图上的地名自己录入数据库。数据的准确性和精度并不能保证，提供的路径仅供参考。若发现数据存在问题，请联系我。</li>
+    														<li class="text-danger">路径规划中，将起/终点规划到道路上，使用的是最短距离的方法，所以可能与实际情况不符，酌情使用。解决方法是手动将地点的出/入口位置设置为起/终点。</li>
+    														<li class="text-danger">本网站目前在移动端的页面与PC端基本一致，PC端右键，在移动端改为长按地图。</li>
+    														<li class="text-danger">如果有任何建议或意见，欢迎在<a href="contact.html">“联系方式”</a>中留言。</li>
+    													</ul>
+    													<p align="right">All Rights Reserved by Liyu.</p>
+    												</div>
+    												<script type="text/javascript">
+    													$("#nei").css('height', $(window).height() - 200);
+    												</script>
+    											</div>
+    											<div class="modal-footer" style="padding: 10px">
+    												<button type="button" data-dismiss="modal" class="btn btn-primary">已阅读</button>
+    											</div>
+    										</div>
+    									</div>
+    								</div>
+    								<!-- 模态弹出窗内容 -->
+    								<div class="modal" id="modal-dis" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="z-index: 20000">
+    									<div class="modal-dialog">
+    										<div class="modal-content">
+    											<div class="modal-header">
+    												<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+    												<h4 class="modal-title">道路长度统计</h4>
+    											</div>
+    											<div class="modal-body" style="align-items: center">
+    												<div id="dis" style="width: 400px; height: 300px; text-align: center; margin: 0 auto;"></div>
+    											</div>
+    											<script type="text/javascript">
+    												if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)/*/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)*/) {
+    													$("#dis").css('width', $(window).width() - 50);
+    													$("#dis").css('height', $(window).height() / 3);
+    												}
+                        /////////////////////////////距离
+                        var dis = [0, 0, 0, 0, 0, 0];
+                        for (i = 0; i < huduan.length - 1; i++) {
+                        	if (Math.abs(huduan[i][4]) < 10) {
+                        		dis[0]++;
+                        	} else if (Math.abs(huduan[i][4]) >= 10 && Math.abs(huduan[i][4]) < 15) {
+                        		dis[1]++;
+                        	} else if (Math.abs(huduan[i][4]) >= 15 && Math.abs(huduan[i][4]) < 30) {
+                        		dis[2]++;
+                        	} else if (Math.abs(huduan[i][4]) >= 30 && Math.abs(huduan[i][4]) < 50) {
+                        		dis[3]++;
+                        	} else if (Math.abs(huduan[i][4]) >= 50 && Math.abs(huduan[i][4]) < 100) {
+                        		dis[4]++;
+                        	} else {
+                        		dis[5]++;
+                        	}
+                        }
+                        var dist = [];
+                        for (i = 0; i < dis.length; i++) {
+                        	dist[i] = dis[i] / (huduan.length - 1);
+                        }
+
+                        ////////////////////////////////////////////////
+                        var chart2 = echarts.init(document.getElementById('dis'));
+                        option2 = {
+                        	tooltip: {
+                        		trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            toolbox: {
+                            	right: 'auto',
+                            	feature: {
+                                    dataView: { readOnly: true },//数据浏览
+                                }
+                            },
+                            legend: {
+                            	data: ['距离']
+                            },
+                            grid: {
+                            	left: '3%',
+                            	right: '4%',
+                            	bottom: '3%',
+                            	containLabel: true
+                            },
+                            xAxis: [
+                            {
+                            	type: 'category',
+                            	data: ['0~10', '10~15', '15~30', '30~50', '50~100', '100~']
+                            }
+                            ],
+                            yAxis: [
+                            {
+                            	type: 'value'
+                            }
+                            ],
+                            series: [
+                            {
+                            	name: '距离',
+                            	type: 'bar',
+                            	data: dist
+                            }
+                            ]
+                        };
+                        chart2.setOption(option2);
+                        /*  $(".modal-body").resize(function () {
+                              $(chart2).resize();
+                          })*/
+                        //   window.onresize = $("#neirong").resize;
+                        /*     $("#neirong").resize(function () {
+                                 $("#dis").resize();
+                             })*/
+                         </script>
+                         <div class="modal-footer">
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+             <!-- 模态弹出窗内容 -->
+             <div class="modal" id="modal-slope" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="z-index: 20000">
+             	<div class="modal-dialog">
+             		<div class="modal-content" style="overflow: auto">
+             			<div class="modal-header">
+             				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+             				<h4 class="modal-title">道路坡度统计</h4>
+             			</div>
+             			<div class="modal-body" style="text-align: center;">
+             				<div id="slop" style="width: 400px; height: 300px; text-align: center; margin: 0 auto;"></div>
+             			</div>
+             			<script type="text/javascript">
+             				if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
+             					$("#slop").css('width', $(window).width() - 50);
+             					$("#slop").css('height', $(window).height() / 3);
+             				}
+             				/*坡度*/
+             				var slope = [0, 0, 0, 0, 0];
+             				for (i = 0; i < huduan.length - 1; i++) {
+             					if (Math.abs(huduan[i][3]) < 0.001) {
+             						slope[0]++;
+             					} else if (Math.abs(huduan[i][3]) >= 0.001 && Math.abs(huduan[i][3]) < 0.01) {
+             						slope[1]++;
+             					} else if (Math.abs(huduan[i][3]) >= 0.01 && Math.abs(huduan[i][3]) < 0.05) {
+             						slope[2]++;
+             					} else if (Math.abs(huduan[i][3]) >= 0.05 && Math.abs(huduan[i][3]) < 0.1) {
+             						slope[3]++;
+             					} else {
+             						slope[4]++;
+             					}
+             				}
+             				var sh = [];
+             				for (i = 0; i < slope.length; i++) {
+             					sh[i] = slope[i] / (huduan.length - 1);
+             				}
+
+             				var chart1 = echarts.init(document.getElementById('slop'));
+             				option1 = {
+             					tooltip: {
+             						trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 
+                                }
+                            },
+                            toolbox: {
+                            	right: 'auto',
+                            	feature: {
+                                    dataView: { readOnly: true }//数据浏览
+                                }
+                            },
+                            legend: {
+                            	data: ['坡度']
+                            },
+                            grid: {
+                            	left: '3%',
+                            	right: '4%',
+                            	bottom: '3%',
+                            	containLabel: true
+                            },
+                            xAxis: [
+                            {
+                            	type: 'category',
+                            	data: ['~0.001', '0.001~0.01', '0.01~0.05', '0.05~0.1', '0.1~']
+                            }
+                            ],
+                            yAxis: [
+                            {
+                            	type: 'value'
+                            }
+                            ],
+                            series: [
+                            {
+                            	name: '坡度',
+                            	type: 'bar',
+                            	data: sh
+                            }
+                            ]
+                        };
+                        chart1.setOption(option1);
+                    </script>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模态弹出窗内容 -->
+        <div class="modal" id="modal-shade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="z-index: 20000">
+        	<div class="modal-dialog">
+        		<div class="modal-content" style="overflow: auto">
+        			<div class="modal-header">
+        				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        				<h4 class="modal-title">道路绿荫覆盖率统计</h4>
+        			</div>
+        			<div class="modal-body" style="text-align: center;">
+        				<div id="sha" style="width: 400px; height: 300px; text-align: center; margin: 0 auto;"></div>
+        			</div>
+        			<script type="text/javascript">
+        				if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)/*/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)*/) {
+        					$("#sha").css('width', $(window).width() - 50);
+        					$("#sha").css('height', $(window).height() / 3);
+        				}
+                        ///////////////////绿荫覆盖率
+                        // huduan.pop();
+                        var shade = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                        for (var i = 0; i < huduan.length - 1; i++) {
+                        	if (huduan[i][6] === 1) {
+                        		shade[9]++;
+                        	} else {
+                        		var grade = huduan[i][6] * 10 % 10;
+                        		switch (grade) {
+                        			case 0: shade[0]++; break;
+                        			case 1: shade[1]++; break;
+                        			case 2: shade[2]++; break;
+                        			case 3: shade[3]++; break;
+                        			case 4: shade[4]++; break;
+                        			case 5: shade[5]++; break;
+                        			case 6: shade[6]++; break;
+                        			case 7: shade[7]++; break;
+                        			case 8: shade[8]++; break;
+                        			case 9: shade[9]++; break;
+                        		}
+                        	}
+                        }
+                        var test = 0;
+                        for (j = 0; j < shade.length; j++) {
+                        	shade[j] = shade[j] / (huduan.length - 1);
+                        	test += shade[j];
+                        }
+
+                        var chart3 = echarts.init(document.getElementById('sha'));
+                        option3 = {
+                        	tooltip: {
+                        		trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line'
+                                }
+                            },
+                            toolbox: {
+                            	right: 'auto',
+                            	feature: {
+                                    dataView: { readOnly: true }//数据浏览
+                                }
+                            },
+                            legend: {
+                            	data: ['绿荫覆盖率']
+                            },
+                            grid: {
+                            	left: '3%',
+                            	right: '4%',
+                            	bottom: '3%',
+                            	containLabel: true
+                            },
+                            xAxis: [
+                            {
+                            	type: 'category',
+                            	data: ['0~0.1', '0.1~0.2', '0.2~0.3', '0.3~0.4', '0.4~0.5', '0.5~0.6', '0.6~1']
+                            }
+                            ],
+                            yAxis: [
+                            {
+                            	type: 'value'
+                            }
+                            ],
+                            series: [
+                            {
+                            	name: '绿荫覆盖率',
+                            	type: 'bar',
+                            	data: [shade[0], shade[1], shade[2], shade[3], shade[4], shade[5], shade[6] + shade[7] + shade[8] + shade[9]]
+                            }
+                            ]
+                        };
+                        chart3.setOption(option3);
+                    </script>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-dismissible " id="3dmapcont" style="height: 500px; width: 700px; top: 54px; left: 0; position: absolute; z-index: 20000; display: none; background-color: rgba(0,0,0,0.5)">
+    	<button type='button' class='close' onclick='close3dmap()'>&times;</button>
+    	<p style="color: white">Wuhan University 3Dmap</p>
+    	<div id="loading" class="loader-inner ball-pulse" style="margin-top: 200px; text-align: center; vertical-align: middle">
+    		<div></div>
+    		<div></div>
+    		<div></div>
+    	</div>
+    	<div id="3dmap" style="width: 650px; height: 450px;"></div>
+    	<script type="text/javascript">
+    		if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
+    			$("#3dmap").css('width', $(window).width() - 40);
+    			$("#3dmap").css('height', $(window).height() - 130);
+    		}
+    		var chart4 = echarts.init(document.getElementById('3dmap'));
+    		var option4;
+    	</script>
+    </div>
+    <a id="li2" href="#" class="btn btn-primary btn-lg btn-block" style="height: auto; width: 100%; position: absolute; bottom: 0; z-index: 6000; display: none">功能列表</a>
+    <div id="more" style="text-align: center; vertical-align: middle; align-content: center; display: none; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; position: absolute; top: 64px; height: 40px; width: 250px; background-color: rgba(0,0,0,0.5); z-index: 5000">
+    	<img id="tishipai" src="static/imgs/温馨提示.png" style="align-self: center; width: 30px; height: 30px; margin: 5px 5px 5px 0; cursor: pointer" />
+    	<img id="fenxi" src="static/imgs/分析.png" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
+    	<img id="showress" src="static/imgs/路线.png" onclick="showres()" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
+    	<img id="3did" src="static/imgs/三维.png" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
+    	<img id="center" src="static/imgs/居中.png" onclick="center1()" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
+    	<img id="shoucang" onclick="shoucangfun()" src="static/imgs/收藏.png" style="width: 30px; height: 30px" />
+    	<img id="clear" src="static/imgs/清空.png" onclick="clearmap()" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
+    </div>
+    <input id="input1" runat="server" type="hidden" />
+    <input id="input2" runat="server" type="hidden" />
+    <input id="input3" runat="server" type="hidden" />
+    <input id="input4" runat="server" type="hidden" />
+    <input id="input7" runat="server" type="hidden" />
+    <input id="input8" runat="server" type="hidden" />
+
+    <style>
+    	.ui-autocomplete {
+    		max-height: 400px;
+    		overflow-y: auto;
+    		/* 防止水平滚动条 */
+    		overflow-x: hidden;
+    	}
+    </style>
+    <script type="text/javascript" src="static/js/mat.js"></script>
+    <script type="text/javascript" src="static/js/map/geoChange.js"></script>
+    <script type="text/javascript" src="static/js/map/HeatmapOverlay.js"></script>
+    <script type="text/javascript" src="static/js/map/floyd.js"></script>
+    <script type="text/javascript" src="static/js/map/dijkstra.js"></script>
+    <script type="text/javascript" src="static/js/map/all.js"></script>
+    <script type="text/javascript">
+    	document.onkeydown = function () { ss() }
+    	function ss() {
+    		if (event.keyCode == 13) {
+    			gofun();
+    		}
+    	}
+    	var result3ddata = [];
+    	var mark;
+    	var resultline = [];
+    	var resultdir = [];
+    	var resultinf = [];
+    	var camposs;
+    	var infoWin1;
+    	var finish;
+    	var map, zoom = 15;     
+    	var beginlng, beginlat, beginid;
+    	var finishlng, finishlat, finishid;
+    	var pnum;
+    	var lnum;
+    	var PP = [];
+    	var P = [];
+    	var p = [];
+    	var po = [];
+    	var xislope, xidis, xiblock, xishade;
+    	var isaddline = new Boolean(false);
+    	var add1 = new Boolean(false);
+    	var add2 = new Boolean(false);
+    	var lk;
+    	var yxlk;
+    	var xqlk;
+    	var method = 0;
+    	var bzuobiao, fzuobiao;
+    	var ponow1 = [];
+    	var store = [];
+
+    	xislope = mapslope, xidis = mapdis, xiblock = mapblock, xishade = mapshade;
+
+    	var availableTag = [];
+    	for (var i = 0; i < address.length; i++) {
+    		availableTag.push(address[i].name);
+    	}
+
+    	/*点云*/
+    	var addre = [];
+    	for (var j = 0; j < address.length; j++) {
+    		addre.push(address[j].lnglat);
+    	}
+    	var Cloud;
+
+    	/*初始化地图对象*/
+    	map = new T.Map("mapDiv");
+    	/*设置显示地图的中心点和级别*/
+    	map.centerAndZoom(new T.LngLat(114.35853, 30.53916), zoom);
+    	/*设置缩放级别*/
+    	map.setMinZoom(1);
+    	map.setMaxZoom(17);
+
+    	/*创建比例尺控件对象*/
+    	var scale = new T.Control.Scale();
+    	/*添加比例尺控件*/
+    	map.addControl(scale);
+
+    	var imageURL = "http://t0.tianditu.gov.cn/img_w/wmts?" +
+    	"tk=ee1ce731737b710ba361031e64df5db4&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles" +
+    	"&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}";
+    	/*创建自定义图层对象*/
+    	var lay = new T.TileLayer(imageURL, { minZoom: 1, maxZoom: 18 });
+    	/*版权控件*/
+    	var copyControl = new T.Control.Copyright({ position: T_ANCHOR_BOTTOM_RIGHT });
+    	map.addControl(copyControl);
+    	copyControl.addCopyright({
+    		id: 1,
+    		content: " <p style='float:right'>Copyright &copy; <%:DateTime.Now.Year %> - Liyu All Rights Reserved</p>" +
+    		"  <a target='_blank' href='http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011102000743' style='display: inline-block; text-decoration: none; height: 20px; line-height: 20px;'>" +
+    		" <img src='static/imgs/备案图标.png' style='float: left;' /><p style='float: left; height: 20px; line-height: 20px; margin: 0px 0px 0px 5px; color: #939393;'>鄂公网安备 42011102000743号</p></a>"
+    	});
+
+    	/*点击事件*/
+    	map.addEventListener("click", MapClick);
+    	/*矩形框*/
+    	lk = new T.Polyline(lunkuo, { color: "grey", lineStyle: "dashed", opacity: 1, weight: 2 });
+    	map.addOverLay(lk);
+    	yxlk = new T.Polyline(yixuebu, { color: "grey", lineStyle: "dashed", opacity: 1, weight: 2 });
+    	map.addOverLay(yxlk);
+    	xqlk = new T.Polyline(xiaoqu, { color: "grey", lineStyle: "dashed", opacity: 1, weight: 2 });
+    	map.addOverLay(xqlk);
+
+    	var menu = new T.ContextMenu({
+    		width: 120
+    	});
+    	var txtMenuItem = [
+    	{
+    		text: '设置起点',
+    		callback: function () { makebe() }
+    	},
+    	{
+    		text: '设置终点',
+    		callback: function () { makefi() }
+
+    	},
+    	{
+    		text: '手机定位',
+    		callback: function () {
+    			var lo = new T.Geolocation();/*定位*/
+    			lo.getCurrentPosition(position, { enableHighAccuracy: true });
+    		}
+    	}, {
+    		text: '清空',
+    		callback: function () { clearmap() }
+    	}];
+
+    	for (var i = 0; i < txtMenuItem.length; i++) {
+    		/*添加菜单项*/
+    		var menuItem = new T.MenuItem(txtMenuItem[i].text, txtMenuItem[i].callback);
+    		menu.addItem(menuItem);
+    		/*添加分割线*/
+    		menu.addSeparator();
+    	}
+    	/*添加右键菜单*/
+    	map.addContextMenu(menu);
+
+    	/*heatmap*/
+    	var heatmapOverlay = new T.HeatmapOverlay({
+    		"radius": 15,
+    		"gradient": {
+    			0.1: "rgb(25,25,112)",
+    			0.2: "rgb(0,0,128)",
+    			0.3: "rgb(0,0,255)",
+    			0.4: "rgb(30,144,255)",
+    			0.5: "rgb(0,255,255)",
+    			0.6: "rgb(0,255,0)",
+    			0.7: "rgb(255,255,0)",
+    			0.8: "rgb(255,165,0)",
+    			0.9: "rgb(255,69,0)",
+    			1.0: "rgb(255,0,0)"
+    		}
+    	});   
+
+    	/*历史记录渲染*/
+    	renderRecords();
+    </script>
+</body>
+</html>

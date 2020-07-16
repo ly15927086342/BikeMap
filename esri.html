@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>Get started with SceneView - Create a 3D map - 4.4</title>
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 95%;
+            width: 100%;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.4/esri/css/main.css">
+    <script src="https://js.arcgis.com/4.4/"></script>
+
+    <script>
+    require([
+      "esri/Map",
+      "esri/views/SceneView",
+      "dojo/domReady!"
+    ], function(Map, SceneView) {
+
+      var map = new Map({
+        basemap: "streets",
+        ground: "world-elevation"
+      });
+      map.basemap="streets-navigation-vector";
+
+      var view = new SceneView({
+        container: "viewDiv",
+        map: map,
+        center: [114.353310, 30.531030],
+        scale: 50000000
+      });
+
+    });
+    </script>
+</head>
+
+<body>
+    <div id="viewDiv"></div>
+    <footer style="height=5%">
+        <p>直接放大，可以看到武大信部。网页加载较慢，请耐心等待。</p>
+    </footer>
+</body>
+</html>

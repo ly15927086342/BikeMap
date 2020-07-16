@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>BikeMap-关于</title>
+	<link href="static/css/Site.css" rel="stylesheet" />
+	<link href="static/css/bootstrap2.min.css" rel="stylesheet" />
+	<link rel="icon" type="image/x-icon" href="骑行.ico" />
+	<link rel="shortcut icon" type="image/x-icon" href="骑行.ico" />
+	<link href="static/css/jquery-ui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="static/css/loaders.min.css" type="text/css" />
+	<script src="static/js/jquery-3.2.1.min.js"></script>
+	<script src="static/js/bootstrap.min.js"></script>
+	<script src="static/js/jquery-ui-1.8.24.min.js"></script>
+	<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+	<style type="text/css">
+		.card-item{
+			padding: 20px;
+			width:180px;
+			height:200px;
+			text-align: center;
+			transition: all;
+		}
+		.card-item:hover{
+			box-shadow:1px 1px 8px #999; 
+			transform: translate(0,-2px) scale(1.05);
+		}
+	</style>
+</head>
+<body>
+	<div class="navbar navbar-default navbar-fixed-top" style="z-index: 10000">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse">
+					<span class="sr-only">导航</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">BikeMap<img src="static/imgs/骑行.png" style="width: 20px; height: 20px; float: left; vertical-align: middle" /></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="./index.html">主页</a></li>
+					<li><a href="./map.html">地图</a></li>
+					<li><a href="./about.html">日志</a></li>
+					<li class="active"><a href="./contact.html">关于</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container" style="padding-top: 50px; margin-top: 40px;">
+		<div class="form-horizontal" >
+			<img src="static/imgs/Word Art.jpeg" style="width: 20%;float: right; margin-left: 10px;" />	
+			<h3>站主简介</h3>
+			<p>
+				<strong class="text-info">Name:</strong> 李煜<br />
+				<strong class="text-info">Nickname:</strong> 后主、芋头、玉儿<br />
+				<strong class="text-info">Username:</strong> Hougiser<br />
+				<strong class="text-info">Birthday:</strong> 1996-3-4<br />
+				<strong class="text-info">Interest:</strong> 编程、绘画、篮球、音乐<br />
+				<strong class="text-info">Hometown:</strong> 中国福建<br />
+				<strong class="text-info">Favorite Word:</strong> There's a crack in everything.That's how the light gets in.——Leonard Cohen《Anthem》<br />
+				<strong class="text-info">M-Subject:</strong> 测绘工程（本）、地图学与地理信息系统（硕）<br />
+				<strong class="text-info">School:</strong> 武汉大学<br />
+				<strong class="text-info">Post Code:</strong>    430072<br />
+				<strong class="text-info">Tel:</strong>     15927086342<br />
+				<strong class="text-info">Email:</strong>   <a href="mailto:liyu2014@whu.edu.cn">liyu2014@whu.edu.cn</a><br />
+			</p>
+			<h3>参与项目</h3>
+			<div style="display: flex;flex-direction: row;flex-wrap: wrap;width: 100%;">
+				<div class="card-item">
+					<img src="static/imgs/resume/ballonline_wx.jpg" style="width: 120px;height: 120px">
+					<div style="margin-top: 20px;"><strong>约球online</strong></div>
+				</div>
+				<div class="card-item">
+					<img src="static/imgs/resume/boat_qq.png" style="width: 120px;height: 120px">
+					<div style="margin-top: 20px;"><strong>Boat校园</strong></div>
+				</div>
+				<div class="card-item">
+					<img src="static/imgs/resume/boat_wx.jpg" style="width: 120px;height: 120px">
+					<div style="margin-top: 20px;"><strong>Boat校园</strong></div>
+				</div>
+				<div class="card-item">
+					<img src="static/imgs/resume/deadline_qq.png" style="width: 120px;height: 120px">
+					<div style="margin-top: 20px;"><strong>当下日程</strong></div>
+				</div>
+				<div class="card-item">
+					<img src="static/imgs/resume/deadline_wx.jpg" style="width: 120px;height: 120px">
+					<div style="margin-top: 20px;"><strong>当下日程</strong></div>
+				</div>
+			</div>
+			<h3>留言</h3>
+			<div id="vcomments"></div>
+			<script>
+				new Valine({
+					el: '#vcomments',
+					appId: 'HyKTDbbfiBnFkeDQBFcc1WBW-gzGzoHsz',
+					appKey: 'PciPbtAljyOaxiqIFEkDQF7o'
+				})
+			</script>
+			<hr />
+			<footer style="align-items: center; text-align: center;" id="foot">
+				<div style=" margin: 0 auto;margin-bottom:20px;">
+					<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011102000743" style="display: inline-block; text-decoration: none; height: 20px; line-height: 20px;">
+						<img src="static/imgs/备案图标.png" style="float: left;" /><p style="float: left; height: 20px; line-height: 20px; margin: 0px 0px 0px 5px; color: #939393;">鄂公网安备 42011102000743号</p>
+					</a>
+					<p style="color: #939393;">
+						Copyright &copy; 2020 - Liyu All Rights Reserved  
+					</p>
+					<script type="text/javascript">
+						var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://"); document.write(unescape("%3Cspan id='cnzz_stat_icon_1263209261'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1263209261%26online%3D2' type='text/javascript'%3E%3C/script%3E"));
+					</script>
+				</div>
+			</footer>
+		</div>
+	</div>
+</body>
+</html>
