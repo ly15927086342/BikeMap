@@ -11,19 +11,14 @@
 	<link rel="shortcut icon" type="image/x-icon" href="骑行.ico" />
 	<link href="static/css/jquery-ui.min.css" rel="stylesheet" />
 	<link rel="stylesheet" href="static/css/loaders.min.css" type="text/css" />
-	<script src="static/js/map/echarts.js"></script>
-	<script src="static/js/map/echarts-gl.js"></script>   
-	<script src="static/js/map/shine.js"></script>
-	<script src="static/js/jquery-3.2.1.min.js"></script>
-	<script src="static/js/bootstrap.min.js"></script>
-	<script src="static/js/jquery-ui-1.8.24.min.js"></script>
-	<script type="text/javascript" src="//api.tianditu.gov.cn/api?v=4.0&tk=ee1ce731737b710ba361031e64df5db4"></script>
-	<!-- 后台会更新 -->
-	<script type="text/javascript" src="static/js/data/polyline.js"></script>
-	<script type="text/javascript" src="static/js/data/point.js"></script>
-	<script type="text/javascript" src="static/js/data/address.js"></script>
-	<script type="text/javascript" src="static/js/data/heatmap.js"></script>
-	<script type="text/javascript" src="static/js/data/lunkuo.js"></script>
+	<style>
+       .ui-autocomplete {
+          max-height: 400px;
+          overflow-y: auto;
+          /* 防止水平滚动条 */
+          overflow-x: hidden;
+      }
+  </style>
 </head>
 <body>
 	<div class="navbar navbar-default navbar-fixed-top" style="z-index: 10000">
@@ -47,45 +42,6 @@
 			</div>
 		</div>
 	</div>
-	<script>
-		$(document).ready(function () {
-			try {
-				huduanrefresh(0.5, 0.5, 0, 0);
-				if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
-					map.removeControl(copyControl);
-					$(".form-group").css("width", "100%");
-					$("input").css("max-width", "350px");
-					$("button").css("max-width", "200px");
-					$("#li1").css("display", "block");
-					$("#location1").css("display", "block");
-					$("#li1").css("display", "block");
-					$("#shuoming").css("display", "block");
-                    //创建缩放控件对象
-                    control = new T.Control.Zoom({ position: T_ANCHOR_BOTTOM_RIGHT });
-                    //添加缩放控件
-                    map.addControl(control);
-                    //  $("#compass").css("display", "none");
-                    $("#compass").css("width", "40px");
-                    $("#compass").css("height", "40px");
-                    $("#compass").css("top", "45px");
-                    $("#compass").css("left", "5px");
-                    $("#3dmapcont").css("width", $(window).width());
-                    $("#3dmapcont").css("height", $(window).height());
-                } else {
-                	$("#search").css("display", "block");
-                	$("#main").css("bottom", "0");
-                	$(".nav-pills").css("display", "block");
-                	$(".form-group").css("width", "300px");
-                	$("#3dmapcont").css("left", $(window).width() / 2 - 350);
-                	$("#3dmapcont").css("top", $(window).height() / 2 - 250);
-                	$("#imgcont").css("display", "block");
-                }
-                $("#left").css("top", $(window).height() / 2 - 60);
-                $("#right").css("top", $(window).height() / 2 - 60);
-                $("#more").css("left", $(window).width() / 2 - 125);
-            } catch (e) { }
-        });
-    </script>
 
     <div id="cont" class="alert alert-dismissible" style="overflow: hidden; position: absolute; right: 0px; top: 54px; bottom: 0px; left: 0px; margin-bottom: 0; padding-right: 15px; background-color: white; display: none; z-index: 7000;">
     	<button type='button' class='close' onclick='closecont()' style="position: absolute; right: 10px; top: 10px;">&times;</button>
@@ -371,9 +327,6 @@
     													</ul>
     													<p align="right">All Rights Reserved by Liyu.</p>
     												</div>
-    												<script type="text/javascript">
-    													$("#nei").css('height', $(window).height() - 200);
-    												</script>
     											</div>
     											<div class="modal-footer" style="padding: 10px">
     												<button type="button" data-dismiss="modal" class="btn btn-primary">已阅读</button>
@@ -392,462 +345,498 @@
     											<div class="modal-body" style="align-items: center">
     												<div id="dis" style="width: 400px; height: 300px; text-align: center; margin: 0 auto;"></div>
     											</div>
-    											<script type="text/javascript">
-    												if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)/*/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)*/) {
-    													$("#dis").css('width', $(window).width() - 50);
-    													$("#dis").css('height', $(window).height() / 3);
-    												}
-                        /////////////////////////////距离
-                        var dis = [0, 0, 0, 0, 0, 0];
-                        for (i = 0; i < huduan.length - 1; i++) {
-                        	if (Math.abs(huduan[i][4]) < 10) {
-                        		dis[0]++;
-                        	} else if (Math.abs(huduan[i][4]) >= 10 && Math.abs(huduan[i][4]) < 15) {
-                        		dis[1]++;
-                        	} else if (Math.abs(huduan[i][4]) >= 15 && Math.abs(huduan[i][4]) < 30) {
-                        		dis[2]++;
-                        	} else if (Math.abs(huduan[i][4]) >= 30 && Math.abs(huduan[i][4]) < 50) {
-                        		dis[3]++;
-                        	} else if (Math.abs(huduan[i][4]) >= 50 && Math.abs(huduan[i][4]) < 100) {
-                        		dis[4]++;
-                        	} else {
-                        		dis[5]++;
-                        	}
-                        }
-                        var dist = [];
-                        for (i = 0; i < dis.length; i++) {
-                        	dist[i] = dis[i] / (huduan.length - 1);
-                        }
+                                             <div class="modal-footer">
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
 
-                        ////////////////////////////////////////////////
-                        var chart2 = echarts.init(document.getElementById('dis'));
-                        option2 = {
-                        	tooltip: {
-                        		trigger: 'axis',
+                                 <!-- 模态弹出窗内容 -->
+                                 <div class="modal" id="modal-slope" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="z-index: 20000">
+                                  <div class="modal-dialog">
+                                   <div class="modal-content" style="overflow: auto">
+                                    <div class="modal-header">
+                                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                     <h4 class="modal-title">道路坡度统计</h4>
+                                 </div>
+                                 <div class="modal-body" style="text-align: center;">
+                                     <div id="slop" style="width: 400px; height: 300px; text-align: center; margin: 0 auto;"></div>
+                                 </div>
+                                 <div class="modal-footer">
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+
+                     <!-- 模态弹出窗内容 -->
+                     <div class="modal" id="modal-shade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="z-index: 20000">
+                         <div class="modal-dialog">
+                          <div class="modal-content" style="overflow: auto">
+                           <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title">道路绿荫覆盖率统计</h4>
+                        </div>
+                        <div class="modal-body" style="text-align: center;">
+                            <div id="sha" style="width: 400px; height: 300px; text-align: center; margin: 0 auto;"></div>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-dismissible " id="3dmapcont" style="height: 500px; width: 700px; top: 54px; left: 0; position: absolute; z-index: 20000; display: none; background-color: rgba(0,0,0,0.5)">
+           <button type='button' class='close' onclick='close3dmap()'>&times;</button>
+           <p style="color: white">Wuhan University 3Dmap</p>
+           <div id="loading" class="loader-inner ball-pulse" style="margin-top: 200px; text-align: center; vertical-align: middle">
+              <div></div>
+              <div></div>
+              <div></div>
+          </div>
+          <div id="3dmap" style="width: 650px; height: 450px;"></div>
+      </div>
+      <a id="li2" href="#" class="btn btn-primary btn-lg btn-block" style="height: auto; width: 100%; position: absolute; bottom: 0; z-index: 6000; display: none">功能列表</a>
+      <div id="more" style="text-align: center; vertical-align: middle; align-content: center; display: none; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; position: absolute; top: 64px; height: 40px; width: 250px; background-color: rgba(0,0,0,0.5); z-index: 5000">
+       <img id="tishipai" src="static/imgs/温馨提示.png" style="align-self: center; width: 30px; height: 30px; margin: 5px 5px 5px 0; cursor: pointer" />
+       <img id="fenxi" src="static/imgs/分析.png" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
+       <img id="showress" src="static/imgs/路线.png" onclick="showres()" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
+       <img id="3did" src="static/imgs/三维.png" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
+       <img id="center" src="static/imgs/居中.png" onclick="center1()" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
+       <img id="shoucang" onclick="shoucangfun()" src="static/imgs/收藏.png" style="width: 30px; height: 30px" />
+       <img id="clear" src="static/imgs/清空.png" onclick="clearmap()" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
+   </div>
+
+   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
+   <script type="text/javascript" src="//api.tianditu.gov.cn/api?v=4.0&tk=ee1ce731737b710ba361031e64df5db4"></script>
+   <!-- 后台会更新 -->
+   <script type="text/javascript" src="static/js/data/polyline.js"></script>
+   <script type="text/javascript" src="static/js/data/point.js"></script>
+   <script type="text/javascript" src="static/js/data/address.js"></script>
+   <script type="text/javascript" src="static/js/data/heatmap.js"></script>
+   <script type="text/javascript" src="static/js/data/lunkuo.js"></script>
+   <!-- 算法 -->
+   <script type="text/javascript" src="static/js/mat.js"></script>
+   <script type="text/javascript" src="static/js/map/geoChange.js"></script>
+   <script type="text/javascript" src="static/js/map/HeatmapOverlay.js"></script>
+   <script type="text/javascript" src="static/js/map/floyd.js"></script>
+   <script type="text/javascript" src="static/js/map/dijkstra.js"></script>
+   <script type="text/javascript" src="static/js/map/all.js"></script>
+
+   <script>
+    $(document).ready(function () {
+        try {
+            huduanrefresh(0.5, 0.5, 0, 0);
+            if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
+                map.removeControl(copyControl);
+                $(".form-group").css("width", "100%");
+                $("input").css("max-width", "350px");
+                $("button").css("max-width", "200px");
+                $("#li1").css("display", "block");
+                $("#location1").css("display", "block");
+                $("#li1").css("display", "block");
+                $("#shuoming").css("display", "block");
+                    //创建缩放控件对象
+                    control = new T.Control.Zoom({ position: T_ANCHOR_BOTTOM_RIGHT });
+                    //添加缩放控件
+                    map.addControl(control);
+                    //  $("#compass").css("display", "none");
+                    $("#compass").css("width", "40px");
+                    $("#compass").css("height", "40px");
+                    $("#compass").css("top", "45px");
+                    $("#compass").css("left", "5px");
+                    $("#3dmapcont").css("width", $(window).width());
+                    $("#3dmapcont").css("height", $(window).height());
+                } else {
+                    $("#search").css("display", "block");
+                    $("#main").css("bottom", "0");
+                    $(".nav-pills").css("display", "block");
+                    $(".form-group").css("width", "300px");
+                    $("#3dmapcont").css("left", $(window).width() / 2 - 350);
+                    $("#3dmapcont").css("top", $(window).height() / 2 - 250);
+                    $("#imgcont").css("display", "block");
+                }
+                $("#left").css("top", $(window).height() / 2 - 60);
+                $("#right").css("top", $(window).height() / 2 - 60);
+                $("#more").css("left", $(window).width() / 2 - 125);
+            } catch (e) { }
+        });
+    </script>
+    <script type="text/javascript">
+        $("#nei").css('height', $(window).height() - 200);
+    </script>
+    <script type="text/javascript">
+                   document.onkeydown = function () { ss() }
+                   function ss() {
+                      if (event.keyCode == 13) {
+                         gofun();
+                     }
+                 }
+                 var result3ddata = [];
+                 var mark;
+                 var resultline = [];
+                 var resultdir = [];
+                 var resultinf = [];
+                 var camposs;
+                 var infoWin1;
+                 var finish;
+                 var map, zoom = 15;     
+                 var beginlng, beginlat, beginid;
+                 var finishlng, finishlat, finishid;
+                 var pnum;
+                 var lnum;
+                 var PP = [];
+                 var P = [];
+                 var p = [];
+                 var po = [];
+                 var xislope, xidis, xiblock, xishade;
+                 var isaddline = new Boolean(false);
+                 var add1 = new Boolean(false);
+                 var add2 = new Boolean(false);
+                 var lk;
+                 var yxlk;
+                 var xqlk;
+                 var method = 0;
+                 var bzuobiao, fzuobiao;
+                 var ponow1 = [];
+                 var store = [];
+
+                 xislope = mapslope, xidis = mapdis, xiblock = mapblock, xishade = mapshade;
+
+                 var availableTag = [];
+                 for (var i = 0; i < address.length; i++) {
+                  availableTag.push(address[i].name);
+              }
+
+              /*点云*/
+              var addre = [];
+              for (var j = 0; j < address.length; j++) {
+                  addre.push(address[j].lnglat);
+              }
+              var Cloud;
+
+              /*初始化地图对象*/
+              map = new T.Map("mapDiv");
+              /*设置显示地图的中心点和级别*/
+              map.centerAndZoom(new T.LngLat(114.35853, 30.53916), zoom);
+              /*设置缩放级别*/
+              map.setMinZoom(1);
+              map.setMaxZoom(17);
+
+              /*创建比例尺控件对象*/
+              var scale = new T.Control.Scale();
+              /*添加比例尺控件*/
+              map.addControl(scale);
+
+              var imageURL = "http://t0.tianditu.gov.cn/img_w/wmts?" +
+              "tk=ee1ce731737b710ba361031e64df5db4&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles" +
+              "&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}";
+              /*创建自定义图层对象*/
+              var lay = new T.TileLayer(imageURL, { minZoom: 1, maxZoom: 18 });
+              /*版权控件*/
+              var copyControl = new T.Control.Copyright({ position: T_ANCHOR_BOTTOM_RIGHT });
+              map.addControl(copyControl);
+              copyControl.addCopyright({
+                  id: 1,
+                  content: " <p style='float:right'>Copyright &copy; <%:DateTime.Now.Year %> - Liyu All Rights Reserved</p>" +
+                  "  <a target='_blank' href='http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011102000743' style='display: inline-block; text-decoration: none; height: 20px; line-height: 20px;'>" +
+                  " <img src='static/imgs/备案图标.png' style='float: left;' /><p style='float: left; height: 20px; line-height: 20px; margin: 0px 0px 0px 5px; color: #939393;'>鄂公网安备 42011102000743号</p></a>"
+              });
+
+              /*点击事件*/
+              map.addEventListener("click", MapClick);
+              /*矩形框*/
+              lk = new T.Polyline(lunkuo, { color: "grey", lineStyle: "dashed", opacity: 1, weight: 2 });
+              map.addOverLay(lk);
+              yxlk = new T.Polyline(yixuebu, { color: "grey", lineStyle: "dashed", opacity: 1, weight: 2 });
+              map.addOverLay(yxlk);
+              xqlk = new T.Polyline(xiaoqu, { color: "grey", lineStyle: "dashed", opacity: 1, weight: 2 });
+              map.addOverLay(xqlk);
+
+              var menu = new T.ContextMenu({
+                  width: 120
+              });
+              var txtMenuItem = [
+              {
+                  text: '设置起点',
+                  callback: function () { makebe() }
+              },
+              {
+                  text: '设置终点',
+                  callback: function () { makefi() }
+
+              },
+              {
+                  text: '手机定位',
+                  callback: function () {
+                     var lo = new T.Geolocation();/*定位*/
+                     lo.getCurrentPosition(position, { enableHighAccuracy: true });
+                 }
+             }, {
+              text: '清空',
+              callback: function () { clearmap() }
+          }];
+
+          for (var i = 0; i < txtMenuItem.length; i++) {
+              /*添加菜单项*/
+              var menuItem = new T.MenuItem(txtMenuItem[i].text, txtMenuItem[i].callback);
+              menu.addItem(menuItem);
+              /*添加分割线*/
+              menu.addSeparator();
+          }
+          /*添加右键菜单*/
+          map.addContextMenu(menu);
+
+          /*heatmap*/
+          var heatmapOverlay = new T.HeatmapOverlay({
+              "radius": 15,
+              "gradient": {
+                 0.1: "rgb(25,25,112)",
+                 0.2: "rgb(0,0,128)",
+                 0.3: "rgb(0,0,255)",
+                 0.4: "rgb(30,144,255)",
+                 0.5: "rgb(0,255,255)",
+                 0.6: "rgb(0,255,0)",
+                 0.7: "rgb(255,255,0)",
+                 0.8: "rgb(255,165,0)",
+                 0.9: "rgb(255,69,0)",
+                 1.0: "rgb(255,0,0)"
+             }
+         });   
+
+          /*历史记录渲染*/
+          renderRecords();
+      </script>
+    <script src="//cdn.bootcdn.net/ajax/libs/echarts/4.1.0/echarts.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/echarts-gl/1.1.2/echarts-gl.min.js"></script>   
+    <script src="static/js/map/shine.js"></script>
+    <script type="text/javascript">
+        if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)/*/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)*/) {
+            $("#dis").css('width', $(window).width() - 50);
+            $("#dis").css('height', $(window).height() / 3);
+        }
+        /*距离*/
+        var dis = [0, 0, 0, 0, 0, 0];
+        for (i = 0; i < huduan.length - 1; i++) {
+            if (Math.abs(huduan[i][4]) < 10) {
+                dis[0]++;
+            } else if (Math.abs(huduan[i][4]) >= 10 && Math.abs(huduan[i][4]) < 15) {
+                dis[1]++;
+            } else if (Math.abs(huduan[i][4]) >= 15 && Math.abs(huduan[i][4]) < 30) {
+                dis[2]++;
+            } else if (Math.abs(huduan[i][4]) >= 30 && Math.abs(huduan[i][4]) < 50) {
+                dis[3]++;
+            } else if (Math.abs(huduan[i][4]) >= 50 && Math.abs(huduan[i][4]) < 100) {
+                dis[4]++;
+            } else {
+                dis[5]++;
+            }
+        }
+        var dist = [];
+        for (i = 0; i < dis.length; i++) {
+            dist[i] = dis[i] / (huduan.length - 1);
+        }
+
+        var chart2 = echarts.init(document.getElementById('dis'));
+        option2 = {
+            tooltip: {
+                trigger: 'axis',
                                 axisPointer: {            // 坐标轴指示器，坐标轴触发有效
                                     type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
                                 }
                             },
                             toolbox: {
-                            	right: 'auto',
-                            	feature: {
+                                right: 'auto',
+                                feature: {
                                     dataView: { readOnly: true },//数据浏览
                                 }
                             },
                             legend: {
-                            	data: ['距离']
+                                data: ['距离']
                             },
                             grid: {
-                            	left: '3%',
-                            	right: '4%',
-                            	bottom: '3%',
-                            	containLabel: true
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
                             },
                             xAxis: [
                             {
-                            	type: 'category',
-                            	data: ['0~10', '10~15', '15~30', '30~50', '50~100', '100~']
+                                type: 'category',
+                                data: ['0~10', '10~15', '15~30', '30~50', '50~100', '100~']
                             }
                             ],
                             yAxis: [
                             {
-                            	type: 'value'
+                                type: 'value'
                             }
                             ],
                             series: [
                             {
-                            	name: '距离',
-                            	type: 'bar',
-                            	data: dist
+                                name: '距离',
+                                type: 'bar',
+                                data: dist
                             }
                             ]
                         };
                         chart2.setOption(option2);
-                        /*  $(".modal-body").resize(function () {
-                              $(chart2).resize();
-                          })*/
-                        //   window.onresize = $("#neirong").resize;
-                        /*     $("#neirong").resize(function () {
-                                 $("#dis").resize();
-                             })*/
-                         </script>
-                         <div class="modal-footer">
-                         </div>
-                     </div>
-                 </div>
-             </div>
+                    </script>
+                    <script type="text/javascript">
+                       if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
+                          $("#slop").css('width', $(window).width() - 50);
+                          $("#slop").css('height', $(window).height() / 3);
+                      }
+                      /*坡度*/
+                      var slope = [0, 0, 0, 0, 0];
+                      for (i = 0; i < huduan.length - 1; i++) {
+                          if (Math.abs(huduan[i][3]) < 0.001) {
+                             slope[0]++;
+                         } else if (Math.abs(huduan[i][3]) >= 0.001 && Math.abs(huduan[i][3]) < 0.01) {
+                             slope[1]++;
+                         } else if (Math.abs(huduan[i][3]) >= 0.01 && Math.abs(huduan[i][3]) < 0.05) {
+                             slope[2]++;
+                         } else if (Math.abs(huduan[i][3]) >= 0.05 && Math.abs(huduan[i][3]) < 0.1) {
+                             slope[3]++;
+                         } else {
+                             slope[4]++;
+                         }
+                     }
+                     var sh = [];
+                     for (i = 0; i < slope.length; i++) {
+                      sh[i] = slope[i] / (huduan.length - 1);
+                  }
 
-             <!-- 模态弹出窗内容 -->
-             <div class="modal" id="modal-slope" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="z-index: 20000">
-             	<div class="modal-dialog">
-             		<div class="modal-content" style="overflow: auto">
-             			<div class="modal-header">
-             				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-             				<h4 class="modal-title">道路坡度统计</h4>
-             			</div>
-             			<div class="modal-body" style="text-align: center;">
-             				<div id="slop" style="width: 400px; height: 300px; text-align: center; margin: 0 auto;"></div>
-             			</div>
-             			<script type="text/javascript">
-             				if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
-             					$("#slop").css('width', $(window).width() - 50);
-             					$("#slop").css('height', $(window).height() / 3);
-             				}
-             				/*坡度*/
-             				var slope = [0, 0, 0, 0, 0];
-             				for (i = 0; i < huduan.length - 1; i++) {
-             					if (Math.abs(huduan[i][3]) < 0.001) {
-             						slope[0]++;
-             					} else if (Math.abs(huduan[i][3]) >= 0.001 && Math.abs(huduan[i][3]) < 0.01) {
-             						slope[1]++;
-             					} else if (Math.abs(huduan[i][3]) >= 0.01 && Math.abs(huduan[i][3]) < 0.05) {
-             						slope[2]++;
-             					} else if (Math.abs(huduan[i][3]) >= 0.05 && Math.abs(huduan[i][3]) < 0.1) {
-             						slope[3]++;
-             					} else {
-             						slope[4]++;
-             					}
-             				}
-             				var sh = [];
-             				for (i = 0; i < slope.length; i++) {
-             					sh[i] = slope[i] / (huduan.length - 1);
-             				}
-
-             				var chart1 = echarts.init(document.getElementById('slop'));
-             				option1 = {
-             					tooltip: {
-             						trigger: 'axis',
+                  var chart1 = echarts.init(document.getElementById('slop'));
+                  option1 = {
+                      tooltip: {
+                         trigger: 'axis',
                                 axisPointer: {            // 坐标轴指示器，坐标轴触发有效
                                     type: 'shadow'        // 默认为直线，可选为：'line' | 
                                 }
                             },
                             toolbox: {
-                            	right: 'auto',
-                            	feature: {
+                                right: 'auto',
+                                feature: {
                                     dataView: { readOnly: true }//数据浏览
                                 }
                             },
                             legend: {
-                            	data: ['坡度']
+                                data: ['坡度']
                             },
                             grid: {
-                            	left: '3%',
-                            	right: '4%',
-                            	bottom: '3%',
-                            	containLabel: true
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
                             },
                             xAxis: [
                             {
-                            	type: 'category',
-                            	data: ['~0.001', '0.001~0.01', '0.01~0.05', '0.05~0.1', '0.1~']
+                                type: 'category',
+                                data: ['~0.001', '0.001~0.01', '0.01~0.05', '0.05~0.1', '0.1~']
                             }
                             ],
                             yAxis: [
                             {
-                            	type: 'value'
+                                type: 'value'
                             }
                             ],
                             series: [
                             {
-                            	name: '坡度',
-                            	type: 'bar',
-                            	data: sh
+                                name: '坡度',
+                                type: 'bar',
+                                data: sh
                             }
                             ]
                         };
                         chart1.setOption(option1);
                     </script>
-                    <div class="modal-footer">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 模态弹出窗内容 -->
-        <div class="modal" id="modal-shade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="z-index: 20000">
-        	<div class="modal-dialog">
-        		<div class="modal-content" style="overflow: auto">
-        			<div class="modal-header">
-        				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-        				<h4 class="modal-title">道路绿荫覆盖率统计</h4>
-        			</div>
-        			<div class="modal-body" style="text-align: center;">
-        				<div id="sha" style="width: 400px; height: 300px; text-align: center; margin: 0 auto;"></div>
-        			</div>
-        			<script type="text/javascript">
-        				if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)/*/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)*/) {
-        					$("#sha").css('width', $(window).width() - 50);
-        					$("#sha").css('height', $(window).height() / 3);
-        				}
+                    <script type="text/javascript">
+                        if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)/*/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)*/) {
+                         $("#sha").css('width', $(window).width() - 50);
+                         $("#sha").css('height', $(window).height() / 3);
+                     }
                         ///////////////////绿荫覆盖率
                         // huduan.pop();
                         var shade = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                         for (var i = 0; i < huduan.length - 1; i++) {
-                        	if (huduan[i][6] === 1) {
-                        		shade[9]++;
-                        	} else {
-                        		var grade = huduan[i][6] * 10 % 10;
-                        		switch (grade) {
-                        			case 0: shade[0]++; break;
-                        			case 1: shade[1]++; break;
-                        			case 2: shade[2]++; break;
-                        			case 3: shade[3]++; break;
-                        			case 4: shade[4]++; break;
-                        			case 5: shade[5]++; break;
-                        			case 6: shade[6]++; break;
-                        			case 7: shade[7]++; break;
-                        			case 8: shade[8]++; break;
-                        			case 9: shade[9]++; break;
-                        		}
-                        	}
+                            if (huduan[i][6] === 1) {
+                                shade[9]++;
+                            } else {
+                                var grade = huduan[i][6] * 10 % 10;
+                                switch (grade) {
+                                    case 0: shade[0]++; break;
+                                    case 1: shade[1]++; break;
+                                    case 2: shade[2]++; break;
+                                    case 3: shade[3]++; break;
+                                    case 4: shade[4]++; break;
+                                    case 5: shade[5]++; break;
+                                    case 6: shade[6]++; break;
+                                    case 7: shade[7]++; break;
+                                    case 8: shade[8]++; break;
+                                    case 9: shade[9]++; break;
+                                }
+                            }
                         }
                         var test = 0;
                         for (j = 0; j < shade.length; j++) {
-                        	shade[j] = shade[j] / (huduan.length - 1);
-                        	test += shade[j];
+                            shade[j] = shade[j] / (huduan.length - 1);
+                            test += shade[j];
                         }
 
                         var chart3 = echarts.init(document.getElementById('sha'));
                         option3 = {
-                        	tooltip: {
-                        		trigger: 'axis',
+                            tooltip: {
+                                trigger: 'axis',
                                 axisPointer: {            // 坐标轴指示器，坐标轴触发有效
                                     type: 'shadow'        // 默认为直线，可选为：'line'
                                 }
                             },
                             toolbox: {
-                            	right: 'auto',
-                            	feature: {
+                                right: 'auto',
+                                feature: {
                                     dataView: { readOnly: true }//数据浏览
                                 }
                             },
                             legend: {
-                            	data: ['绿荫覆盖率']
+                                data: ['绿荫覆盖率']
                             },
                             grid: {
-                            	left: '3%',
-                            	right: '4%',
-                            	bottom: '3%',
-                            	containLabel: true
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
                             },
                             xAxis: [
                             {
-                            	type: 'category',
-                            	data: ['0~0.1', '0.1~0.2', '0.2~0.3', '0.3~0.4', '0.4~0.5', '0.5~0.6', '0.6~1']
+                                type: 'category',
+                                data: ['0~0.1', '0.1~0.2', '0.2~0.3', '0.3~0.4', '0.4~0.5', '0.5~0.6', '0.6~1']
                             }
                             ],
                             yAxis: [
                             {
-                            	type: 'value'
+                                type: 'value'
                             }
                             ],
                             series: [
                             {
-                            	name: '绿荫覆盖率',
-                            	type: 'bar',
-                            	data: [shade[0], shade[1], shade[2], shade[3], shade[4], shade[5], shade[6] + shade[7] + shade[8] + shade[9]]
+                                name: '绿荫覆盖率',
+                                type: 'bar',
+                                data: [shade[0], shade[1], shade[2], shade[3], shade[4], shade[5], shade[6] + shade[7] + shade[8] + shade[9]]
                             }
                             ]
                         };
                         chart3.setOption(option3);
                     </script>
-                    <div class="modal-footer">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="alert alert-dismissible " id="3dmapcont" style="height: 500px; width: 700px; top: 54px; left: 0; position: absolute; z-index: 20000; display: none; background-color: rgba(0,0,0,0.5)">
-    	<button type='button' class='close' onclick='close3dmap()'>&times;</button>
-    	<p style="color: white">Wuhan University 3Dmap</p>
-    	<div id="loading" class="loader-inner ball-pulse" style="margin-top: 200px; text-align: center; vertical-align: middle">
-    		<div></div>
-    		<div></div>
-    		<div></div>
-    	</div>
-    	<div id="3dmap" style="width: 650px; height: 450px;"></div>
-    	<script type="text/javascript">
-    		if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
-    			$("#3dmap").css('width', $(window).width() - 40);
-    			$("#3dmap").css('height', $(window).height() - 130);
-    		}
-    		var chart4 = echarts.init(document.getElementById('3dmap'));
-    		var option4;
-    	</script>
-    </div>
-    <a id="li2" href="#" class="btn btn-primary btn-lg btn-block" style="height: auto; width: 100%; position: absolute; bottom: 0; z-index: 6000; display: none">功能列表</a>
-    <div id="more" style="text-align: center; vertical-align: middle; align-content: center; display: none; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; position: absolute; top: 64px; height: 40px; width: 250px; background-color: rgba(0,0,0,0.5); z-index: 5000">
-    	<img id="tishipai" src="static/imgs/温馨提示.png" style="align-self: center; width: 30px; height: 30px; margin: 5px 5px 5px 0; cursor: pointer" />
-    	<img id="fenxi" src="static/imgs/分析.png" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
-    	<img id="showress" src="static/imgs/路线.png" onclick="showres()" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
-    	<img id="3did" src="static/imgs/三维.png" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
-    	<img id="center" src="static/imgs/居中.png" onclick="center1()" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
-    	<img id="shoucang" onclick="shoucangfun()" src="static/imgs/收藏.png" style="width: 30px; height: 30px" />
-    	<img id="clear" src="static/imgs/清空.png" onclick="clearmap()" style="align-self: center; width: 30px; height: 30px; margin: 5px 0 5px 0; cursor: pointer" />
-    </div>
-    <input id="input1" runat="server" type="hidden" />
-    <input id="input2" runat="server" type="hidden" />
-    <input id="input3" runat="server" type="hidden" />
-    <input id="input4" runat="server" type="hidden" />
-    <input id="input7" runat="server" type="hidden" />
-    <input id="input8" runat="server" type="hidden" />
-
-    <style>
-    	.ui-autocomplete {
-    		max-height: 400px;
-    		overflow-y: auto;
-    		/* 防止水平滚动条 */
-    		overflow-x: hidden;
-    	}
-    </style>
-    <script type="text/javascript" src="static/js/mat.js"></script>
-    <script type="text/javascript" src="static/js/map/geoChange.js"></script>
-    <script type="text/javascript" src="static/js/map/HeatmapOverlay.js"></script>
-    <script type="text/javascript" src="static/js/map/floyd.js"></script>
-    <script type="text/javascript" src="static/js/map/dijkstra.js"></script>
-    <script type="text/javascript" src="static/js/map/all.js"></script>
-    <script type="text/javascript">
-    	document.onkeydown = function () { ss() }
-    	function ss() {
-    		if (event.keyCode == 13) {
-    			gofun();
-    		}
-    	}
-    	var result3ddata = [];
-    	var mark;
-    	var resultline = [];
-    	var resultdir = [];
-    	var resultinf = [];
-    	var camposs;
-    	var infoWin1;
-    	var finish;
-    	var map, zoom = 15;     
-    	var beginlng, beginlat, beginid;
-    	var finishlng, finishlat, finishid;
-    	var pnum;
-    	var lnum;
-    	var PP = [];
-    	var P = [];
-    	var p = [];
-    	var po = [];
-    	var xislope, xidis, xiblock, xishade;
-    	var isaddline = new Boolean(false);
-    	var add1 = new Boolean(false);
-    	var add2 = new Boolean(false);
-    	var lk;
-    	var yxlk;
-    	var xqlk;
-    	var method = 0;
-    	var bzuobiao, fzuobiao;
-    	var ponow1 = [];
-    	var store = [];
-
-    	xislope = mapslope, xidis = mapdis, xiblock = mapblock, xishade = mapshade;
-
-    	var availableTag = [];
-    	for (var i = 0; i < address.length; i++) {
-    		availableTag.push(address[i].name);
-    	}
-
-    	/*点云*/
-    	var addre = [];
-    	for (var j = 0; j < address.length; j++) {
-    		addre.push(address[j].lnglat);
-    	}
-    	var Cloud;
-
-    	/*初始化地图对象*/
-    	map = new T.Map("mapDiv");
-    	/*设置显示地图的中心点和级别*/
-    	map.centerAndZoom(new T.LngLat(114.35853, 30.53916), zoom);
-    	/*设置缩放级别*/
-    	map.setMinZoom(1);
-    	map.setMaxZoom(17);
-
-    	/*创建比例尺控件对象*/
-    	var scale = new T.Control.Scale();
-    	/*添加比例尺控件*/
-    	map.addControl(scale);
-
-    	var imageURL = "http://t0.tianditu.gov.cn/img_w/wmts?" +
-    	"tk=ee1ce731737b710ba361031e64df5db4&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles" +
-    	"&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}";
-    	/*创建自定义图层对象*/
-    	var lay = new T.TileLayer(imageURL, { minZoom: 1, maxZoom: 18 });
-    	/*版权控件*/
-    	var copyControl = new T.Control.Copyright({ position: T_ANCHOR_BOTTOM_RIGHT });
-    	map.addControl(copyControl);
-    	copyControl.addCopyright({
-    		id: 1,
-    		content: " <p style='float:right'>Copyright &copy; <%:DateTime.Now.Year %> - Liyu All Rights Reserved</p>" +
-    		"  <a target='_blank' href='http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011102000743' style='display: inline-block; text-decoration: none; height: 20px; line-height: 20px;'>" +
-    		" <img src='static/imgs/备案图标.png' style='float: left;' /><p style='float: left; height: 20px; line-height: 20px; margin: 0px 0px 0px 5px; color: #939393;'>鄂公网安备 42011102000743号</p></a>"
-    	});
-
-    	/*点击事件*/
-    	map.addEventListener("click", MapClick);
-    	/*矩形框*/
-    	lk = new T.Polyline(lunkuo, { color: "grey", lineStyle: "dashed", opacity: 1, weight: 2 });
-    	map.addOverLay(lk);
-    	yxlk = new T.Polyline(yixuebu, { color: "grey", lineStyle: "dashed", opacity: 1, weight: 2 });
-    	map.addOverLay(yxlk);
-    	xqlk = new T.Polyline(xiaoqu, { color: "grey", lineStyle: "dashed", opacity: 1, weight: 2 });
-    	map.addOverLay(xqlk);
-
-    	var menu = new T.ContextMenu({
-    		width: 120
-    	});
-    	var txtMenuItem = [
-    	{
-    		text: '设置起点',
-    		callback: function () { makebe() }
-    	},
-    	{
-    		text: '设置终点',
-    		callback: function () { makefi() }
-
-    	},
-    	{
-    		text: '手机定位',
-    		callback: function () {
-    			var lo = new T.Geolocation();/*定位*/
-    			lo.getCurrentPosition(position, { enableHighAccuracy: true });
-    		}
-    	}, {
-    		text: '清空',
-    		callback: function () { clearmap() }
-    	}];
-
-    	for (var i = 0; i < txtMenuItem.length; i++) {
-    		/*添加菜单项*/
-    		var menuItem = new T.MenuItem(txtMenuItem[i].text, txtMenuItem[i].callback);
-    		menu.addItem(menuItem);
-    		/*添加分割线*/
-    		menu.addSeparator();
-    	}
-    	/*添加右键菜单*/
-    	map.addContextMenu(menu);
-
-    	/*heatmap*/
-    	var heatmapOverlay = new T.HeatmapOverlay({
-    		"radius": 15,
-    		"gradient": {
-    			0.1: "rgb(25,25,112)",
-    			0.2: "rgb(0,0,128)",
-    			0.3: "rgb(0,0,255)",
-    			0.4: "rgb(30,144,255)",
-    			0.5: "rgb(0,255,255)",
-    			0.6: "rgb(0,255,0)",
-    			0.7: "rgb(255,255,0)",
-    			0.8: "rgb(255,165,0)",
-    			0.9: "rgb(255,69,0)",
-    			1.0: "rgb(255,0,0)"
-    		}
-    	});   
-
-    	/*历史记录渲染*/
-    	renderRecords();
-    </script>
-</body>
-</html>
+                    <script type="text/javascript">
+                      if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
+                       $("#3dmap").css('width', $(window).width() - 40);
+                       $("#3dmap").css('height', $(window).height() - 130);
+                   }
+                   var chart4 = echarts.init(document.getElementById('3dmap'));
+                   var option4;
+               </script>
+  </body>
+  </html>
