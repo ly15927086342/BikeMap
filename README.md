@@ -36,30 +36,6 @@ HTML+CSS(Bootstrap)+JS(Jquery)
 <img src="static/imgs/Pic/PC版.png">
 <img src="static/imgs/Pic/移动版.png" width="300">
 
-#### 个人相关项目
-
-近一年参与的三个小程序项目，有兴趣可以看一下，以后可能会开源。
-
-<div style="display: flex;flex-direction: row;flex-wrap: wrap;width: 100%;">
-	<div style="text-align: center;margin-right: 20px">
-		<img src="static/imgs/resume/ballonline_wx.jpg" width="150" height="150">
-		<div>约球online</div>
-	</div>
-	<div style="text-align: center;margin-right: 20px">
-		<img src="static/imgs/resume/boat_wx.jpg" width="150" height="150">
-		<div>Boat(wx)</div>
-	</div>
-	<div style="text-align: center;margin-right: 20px">
-		<img src="static/imgs/resume/boat_qq.png" width="150" height="150">
-		<div>Boat(qq)</div>
-	</div>
-	<div style="text-align: center;margin-right: 20px">
-		<img src="static/imgs/resume/deadline_wx.jpg" width="150" height="150">
-		<div>当下日程(wx)</div>
-	</div>
-	<div style="text-align: center;margin-right: 20px">
-		<img src="static/imgs/resume/deadline_qq.png" width="150" height="150">
-		<div>当下日程(qq)</div>
-	</div>
-</div>
+#### 展望
+有时间会对网站做重构，目的是提升网站的加载速度。
 
