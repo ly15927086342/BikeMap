@@ -646,11 +646,11 @@ function calculate() {
                 }),
                     /*   shading: 'lambert',
                        lambertMaterial:{
-                           detailTexture:'map1.png'
+                           detailTexture:'map.jpg'
                        }*/
                        shading: 'realistic',
                        realisticMaterial: {
-                        detailTexture: 'static/imgs/map1.png',
+                        detailTexture: 'static/imgs/map.jpg',
                         textureTiling: 1,
                         roughness: 0.8,
                         metalness: 0
