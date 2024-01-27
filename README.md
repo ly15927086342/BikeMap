@@ -1,6 +1,6 @@
 # BikeMap <img src="骑行.ico" width="30" height="30">
 
-2017年暑假写的一个武汉大学自行车规划网站[https://railwayhs.cn/BikeMap](https://railwayhs.cn/BikeMap)，现在开源出来。
+2017年暑假写的一个武汉大学自行车规划网站[https://ly15927086342.github.io/BikeMap/map.html](https://ly15927086342.github.io/BikeMap/map.html)，现在开源出来。
 
 #### 技术栈
 HTML+CSS(Bootstrap)+JS(Jquery)
